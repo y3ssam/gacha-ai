@@ -271,14 +271,40 @@ export function createAppServer({ testConnection = testVertexConnection, store =
   });
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const port = Number(process.env.PORT || 4173);
+export async function listenLocalServer(app, { port = 4173, allowFallback = true, maxAttempts = 20, onPortBusy = () => {} } = {}) {
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be between 1 and 65535.');
+  const attempts = allowFallback ? Math.min(maxAttempts, 65536 - port) : 1;
+  for (let offset = 0; offset < attempts; offset++) {
+    const candidate = port + offset;
+    try {
+      await new Promise((resolve, reject) => {
+        const onError = error => { app.removeListener('listening', onListening); reject(error); };
+        const onListening = () => { app.removeListener('error', onError); resolve(); };
+        app.once('error', onError);
+        app.once('listening', onListening);
+        app.listen(candidate, '127.0.0.1');
+      });
+      return app.address().port;
+    } catch (error) {
+      if (error.code !== 'EADDRINUSE' || offset + 1 >= attempts) throw error;
+      onPortBusy(candidate);
+    }
+  }
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const configuredPort = process.env.PORT;
   const app = createAppServer();
   app.requestTimeout = 75000;
-  app.on('error', error => {
-    console.error(error.code === 'EADDRINUSE' ? `포트 ${port}가 사용 중입니다. 기존 서버를 종료하거나 PORT를 변경해 주세요.` : '로컬 서버를 시작하지 못했습니다.');
+  try {
+    const port = await listenLocalServer(app, {
+      port: Number(configuredPort || 4173),
+      allowFallback: !configuredPort,
+      onPortBusy: port => console.log(`포트 ${port}가 사용 중이어서 다음 포트를 확인합니다.`),
+    });
+    console.log(`Local: http://127.0.0.1:${port}`);
+  } catch (error) {
+    console.error(error.code === 'EADDRINUSE' ? `포트 ${error.port}가 사용 중입니다. PORT 환경 변수를 지우면 빈 포트를 자동으로 찾습니다.` : '로컬 서버를 시작하지 못했습니다. ' + error.message);
     process.exitCode = 1;
-  });
-  app.listen(port, '127.0.0.1', () => console.log(`Local: http://127.0.0.1:${port}`));
+  }
 }

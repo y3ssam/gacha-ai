@@ -37,4 +37,35 @@ test('in-place render retains main scroll while changing pages resets it',()=>{
  try{harness.show('story');assert.equal(main.scrollTop,480);assert.equal(nav.scrollTop,30);harness.show('home');assert.equal(main.scrollTop,0);}
  finally{app.querySelector=original;}
 });
+test('character detail separates growth, skills, equipment, profile, artwork and prompts without mutating game state',()=>{
+ const state=harness.getState(),before=JSON.stringify({owned:state.owned,party:state.party,gold:state.gold,gems:state.gems});
+ const expected={info:'레벨 강화',skills:'스킬 강화',equipment:'장비 변경',profile:'캐릭터 스토리',art:'기본 이미지',prompts:'외형·의상 프롬프트 보강'};
+ for(const [tab,label] of Object.entries(expected)){
+  harness.actions['detail-tab']({dataset:{id:'ael',tab}});
+  const html=nodes.get('#modal').innerHTML;
+  assert.ok(html.includes(label),tab);assert.match(html,/class="detail-content stack"/);
+  assert.match(html,new RegExp(`data-tab="${tab}" aria-pressed="true"`));
+  assert.equal(nodes.get('#modal').className,'character-dialog');
+  if(tab!=='info')assert.ok(!html.includes('>레벨 강화<'));
+  if(tab!=='prompts')assert.ok(!html.includes('NAI 일러스트 생성'));
+ }
+ assert.equal(JSON.stringify({owned:state.owned,party:state.party,gold:state.gold,gems:state.gems}),before);
+});
+test('settings sections retain connection, backup and image retry controls in independent views',()=>{
+ const state=harness.getState();state.imageJobs['test-ui']={status:'failed',error:'테스트 오류'};
+ for(const [tab,labels] of [['connection',['name="serviceAccount"','name="naiToken"','name="model"','name="location"','name="imageModel"','id="connection"']],['saves',['현재 세계 내보내기','id="import-file"','새 세계']],['images',['테스트 오류','data-key="test-ui"']]]){
+  harness.actions['settings-tab']({dataset:{tab}});const html=harness.show('settings');
+  for(const label of labels)assert.ok(html.includes(label),tab+': '+label);
+  assert.match(html,new RegExp(`data-tab="${tab}" aria-pressed="true"`));
+  if(tab!=='connection')assert.ok(!html.includes('name="serviceAccount"'));
+ }
+ delete state.imageJobs['test-ui'];harness.actions['settings-tab']({dataset:{tab:'connection'}});
+});
+test('summoning actions are kept in a dedicated footer and player header uses real progression',()=>{
+ const html=harness.show('gacha');
+ assert.match(html,/<aside class="summon-selector"/);assert.match(html,/<footer class="summon-footer">/);
+ assert.match(html,/<strong>1회 소환<\/strong>/);assert.match(html,/<strong>10회 소환<\/strong>/);
+ assert.ok(html.indexOf('data-action="summon"')>html.indexOf('<footer class="summon-footer">'));
+ assert.match(html,/class="player-status"/);assert.match(html,/aria-label="플레이어 경험치"/);assert.ok(!html.includes('GACHA AI'));
+});
 test('new empty world is preserved until valid generation succeeds',async()=>{nodes.set('#new-name',{value:'새 세계'});await harness.actions['create-slot']();const s=harness.getState();assert.equal(s.mode,'ai');assert.equal(s.catalog.length,0);assert.match(harness.show('studio'),/전체 지침/);assert.match(harness.show('home'),/미생성 세계/);});

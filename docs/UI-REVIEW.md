@@ -1,3 +1,36 @@
+# 가시성·타이포그래피 후속 패치 — 2026-10-17
+
+앞선 프레임 패치 이후 사용자가 레퍼런스의 더 충실한 분석과 가시성 개선을 요청하여, `gacha-game/index.html`의 실제 선택자와 화면 DOM까지 비교했습니다. 아래 후속 내용이 현재 UI 기준이며, 뒤의 첫 패치 분석은 작업 이력입니다.
+
+## 레퍼런스 분석과 적용 근거
+
+원본: [gacha-game/index.html · 6ae30d1](https://github.com/y3ssam/gacha-game/blob/6ae30d1c1f44edd5b9ad85f5dcb1f21d88d3d716/index.html). GitHub에서 `main`의 커밋이 같은지 다시 확인했습니다.
+
+| 실제 레퍼런스 구현 | 확인한 의도 | 이번 반영 |
+| --- | --- | --- |
+| dark 테마 `--surface-main:#131820`, sidebar `#10141b`, active `#242d3d`, action `#b9dfff` | 읽는 면과 행동 버튼을 구분하고 이미지가 없는 면은 불투명하게 유지 | 동일 계열 surface/action 토큰 적용. 목록·설정은 불투명 바탕, 장면 이미지는 로비·전투·스토리·배너에 집중 |
+| body Pretendard/Noto Sans KR/Malgun Gothic/system-ui | 한국어와 OS별 폰트 우선순위 | 같은 로컬 폰트 우선순위, 기본 16px/행간 1.6. 별도 외부 폰트 다운로드 없음 |
+| `.content-header h1` 22px/650, `.character-detail-heading h2` 28px/650, `.character-profile-field dd` 14px/1.8 | 제목 크기보다 굵기·행간·영역으로 계층 구분 | 화면 제목 26px/650, 섹션 22px/600, 본문 16px, 보조 최소 14px. 큰 로비 제목 46→34px, 배너 제목 38→30px |
+| `.game-frame[data-screen="game"]`에서 sidebar 숨김, `.game-bottom-menu` 72px | 관리 화면의 좌측 메뉴와 실제 게임 플레이 메뉴가 다름 | 앞선 좌측 104px 메뉴를 하단 72px 메뉴로 전환. 전체 12개 메뉴를 항상 접근 가능하게 유지 |
+| `.game-settings-row` 72px, player-name/rank/experience/currencies | 로고 대신 현재 플레이어 진행 정보를 상단에 고정 | 임의 GACHA AI 로고 영역을 현재 세계 이름·실제 계정 레벨·경험치 바로 변경. 재화는 우측에 정렬 |
+| `.characters-screen` 24px 28px, `.character-card-grid` 224px 고정 열/20px gap | 보유 수가 적어도 카드가 가로로 늘어나지 않음 | 본문 패딩 24/28px, 캐릭터 카드 210~224px, 카드 간 20px |
+| `.character-detail-actions` 46px 버튼, 별도 info/equipment/skills/outfits/profile 패널, illustration과 content 분리 | 긴 상세 정보 전체를 세로 나열하지 않음 | 정보·스킬·장비·프로필·일러스트·생성 설정 6항목, 왼쪽 일러스트 고정/오른쪽 내용만 스크롤. 강화 비용을 행동별로 분리 |
+| `.summon-layout` 210px 선택 목록 + 24px gap + banner, `.summon-banner-bottom`에 뽑기 행동 | 배너 유형·일러스트·지급 조건·소환 행동의 위치를 고정 | 왼쪽 220px 소환 종류 목록, 오른쪽 배너, 하단 보장 수치·1회/10회 버튼. AI 관리 버튼은 별도 펼침 영역 |
+| `.connection-form`, `.ai-tabs`, `.text-model-fields`, `.image-model-fields` | 연결 종류와 편집 업무를 구분 | 설정은 AI 연결/저장·백업/이미지 기록으로 분리. AI 연결 안에서도 Vertex/NAI를 각 fieldset으로 나눔 |
+| 카드 padding 16/20/24/28px, 세부 항목 gap 8/12/16/20/24px | 정보 간격의 반복 단위 | 동일 간격 토큰 도입. 탭·제목·본문·주요 행동 사이의 반복 간격을 통일 |
+
+레퍼런스의 일부 10~13px 설명 글씨까지 그대로 복제하면 1600×900 프레임 축소 시 더 작게 보이므로, 이번에는 14px 이상으로 조정했습니다. 레퍼런스처럼 하위 화면에서 하단 메뉴를 숨기는 전환은 적용하지 않았습니다. 현재 게임의 여러 기능 간 이동을 유지하는 선택입니다. 1600×900 프레임·로컬 저장·전투 수치·유료 API 호출 규칙은 그대로입니다.
+
+## 가시성 검증
+
+- 기본 글자 `#eef1f7`, 보조 `#b1bbcb`, 강조 `#b7c7ff`를 기본/사이드/활성/호버의 **불투명 배경 4종**과 조합해 4.5:1 이상인지 계산했습니다.
+- 주요 행동은 밝은 파랑 `#b9dfff` 바탕과 어두운 `#131820` 글자 조합으로 4.5:1 이상입니다.
+- 이 계산은 글꼴 렌더링이나 이미지 위의 모든 픽셀 대비를 검증하지 않습니다. 비활성 버튼도 전체 opacity로 희미하게 만들지 않고 별도 바탕·문자색으로 표시합니다.
+- `npm run check`, `npm test` **101개 통과**. 상세 6항목 전환 시 데이터 불변, 연결/백업/이미지 기록 컨트롤, 소환 하단 행동 영역, 플레이어 진행 정보, 색상 대비 회귀 검증을 포함합니다.
+- 실제 브라우저 실행·스크린샷 검증은 미수행입니다. 현재 환경에 Sites 지침에서 요구하는 control-browser가 없어 임의 브라우저 설치/미리보기 실행으로 대체하지 않았습니다. 실계정 유료 API 호출도 하지 않았습니다.
+
+---
+
 # UI 분석 및 1600×900 패치 — 2026-10-17
 
 ## 비교한 실제 게임 화면

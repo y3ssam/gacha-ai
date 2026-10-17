@@ -1,3 +1,13 @@
+# 현재 에셋 — gacha-game 원본 이식
+
+사용자 요청에 따라 [y3ssam/gacha-game](https://github.com/y3ssam/gacha-game)의 원본 PNG 11장을 `assets/reference/`에 복사했습니다. 원본 크기·투명도·파일 내용은 변경하지 않았습니다. 출처·SHA-256은 `assets/reference/provenance.json`, 구체적인 연결은 [REFERENCE-IMPORT.md](REFERENCE-IMPORT.md)에 있습니다.
+
+아래 초기 제작 기록의 로비·초상 아틀라스·4종 WebP는 기본 게임 제거와 함께 삭제되었습니다. 현재 실행 화면에서 사용하지 않습니다. SVG 스킬/공용 아이콘은 유지합니다. 사용자 생성 NAI 이미지는 브라우저 저장소에만 저장합니다.
+
+---
+
+## 초기 제작 이력 (삭제된 기본 삽화 포함)
+
 # 기본 에셋 제작 기록
 
 2026-10-17. 래스터 이미지는 내장 image generation 도구로 제작했습니다. UI 목업을 잘라 쓰지 않고 실제 배경·초상·던전 에셋으로 연결했습니다. 생성 후 WebP로 변환했으며 던전 아틀라스는 네 영역으로 잘랐습니다. 사용자별 NAI 생성 이미지는 이 폴더에 커밋하지 않습니다.

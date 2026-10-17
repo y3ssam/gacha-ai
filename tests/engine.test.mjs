@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import * as E from '../src/engine.js';import {STARTERS} from '../src/data.js';import {validateWorld,validateStory,contentPrompt} from '../src/ai.js';
+import * as Engine from '../src/engine.js';import {createFixtureGame} from './fixtures/game.mjs';const E={...Engine,createGame:createFixtureGame};import {STARTERS} from './fixtures/starter-data.mjs';import {validateWorld,validateStory,contentPrompt} from '../src/ai.js';
 const rng=()=>.8;
 function rich(){const s=E.createGame();s.gems=100000;s.gold=10000000;s.xp=100000;s.essence=10000;return s;}
 test('starter game can be validated and exported as independent structured data',()=>{const a=E.createGame(),b=E.createGame();a.owned.ael.level=2;assert.equal(b.owned.ael.level,1);assert.equal(E.validateSave(JSON.parse(JSON.stringify(a))).version,1);});

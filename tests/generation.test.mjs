@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import * as E from '../src/engine.js';import * as G from '../src/generation.js';import * as P from '../src/progression.js';
-import {STARTERS} from '../src/data.js';
+import * as Engine from '../src/engine.js';import {createFixtureGame} from './fixtures/game.mjs';const E={...Engine,createGame:createFixtureGame};import * as G from '../src/generation.js';import * as P from '../src/progression.js';
+import {STARTERS} from './fixtures/starter-data.mjs';
 import {connection,generateStory} from '../src/ai.js';
 function fixture(task,p){
  if(p.stage==='bible')return {world:{title:'새로운 세계',lore:'고립된 항로에서 신호를 추적한다.',protagonist:'기록자',fixedRules:['치유자는 공격하지 않는다.'],factions:['관측소'],imagePrompt:'observatory'}};

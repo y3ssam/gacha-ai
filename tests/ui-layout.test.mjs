@@ -27,18 +27,13 @@ test('viewport resize updates both stage scale and native dialog/backdrop measur
   assert.equal(typeof listeners.resize,'function');
  }finally{globalThis.document=oldDocument;globalThis.window=oldWindow;}
 });
-test('each starter portrait crops exactly one atlas cell with native aspect ratio',()=>{
- for(let i=0;i<4;i++){
-  const html=portraitMarkup({name:'동료',portrait:i});
-  assert.match(html,/viewBox="0 0 443.5 887"/);
-  assert.match(html,/preserveAspectRatio="xMidYMin meet"/);
-  assert.ok(html.includes(`x="${-443.5*i}"`));
-  assert.ok(!html.includes('background-size'));
- }
+test('missing character artwork uses a neutral placeholder without a bundled character sheet',()=>{
+ const html=portraitMarkup({name:'생성 동료',portrait:2});
+ assert.match(html,/이미지 미생성/);assert.ok(!html.includes('characters.webp'));assert.ok(!html.includes('<image'));
 });
 test('generated portrait uses selected image without atlas scaling and escapes content',()=>{
  const html=portraitMarkup({name:'<동료>"',portrait:2},'data:image/png;base64,YQ==','home-portrait');
  assert.match(html,/<img class="portrait-media"/);assert.ok(!html.includes('<svg'));
  assert.match(html,/aria-label="&lt;동료&gt;&quot;"/);
- assert.match(portraitMarkup({name:'안전',portrait:999},'javascript:alert(1)'),/x="-1330.5"/);
+ assert.match(portraitMarkup({name:'안전',portrait:999},'javascript:alert(1)'),/이미지 미생성/);
 });

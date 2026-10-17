@@ -64,7 +64,7 @@ export function makeServer(){return http.createServer(async(req,res)=>{
  }
  if(req.method!=='GET')return json(res,405,{error:'GET required'});
  const decoded=decodeURIComponent(path);const relative=decoded==='/'?'index.html':decoded.replace(/^\//,'');
- if(!/^(index\.html|src\/[a-zA-Z0-9-]+\.(js|css)|assets\/[a-zA-Z0-9-]+\.(svg|png|webp)|favicon\.svg)$/.test(relative))return json(res,404,{error:'Not found'});
+ if(!/^(index\.html|src\/[a-zA-Z0-9-]+\.(js|css)|assets\/[a-zA-Z0-9-]+\.(svg|png|webp)|assets\/reference\/(dungeons|equipment|materials)\/[a-zA-Z0-9-]+\.png|favicon\.svg)$/.test(relative))return json(res,404,{error:'Not found'});
  const file=await readFile(resolve(ROOT,relative));res.writeHead(200,{'Content-Type':({'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'})[extname(relative)],'X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' http://127.0.0.1:8787 http://localhost:8787; script-src 'self'; object-src 'none'; base-uri 'none'"});res.end(file);
  }catch(e){json(res,e.code==='ENOENT'?404:400,{error:e.code==='ENOENT'?'Not found':e.message});}
  });}

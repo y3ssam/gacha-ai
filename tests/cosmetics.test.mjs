@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import * as E from '../src/engine.js';import * as P from '../src/progression.js';
+import * as Engine from '../src/engine.js';import {createFixtureGame} from './fixtures/game.mjs';const E={...Engine,createGame:createFixtureGame};import * as P from '../src/progression.js';
 function unlocked(){const s=E.createGame();s.player.xp=1000;s.gems=100000;return s;}
 function ready(s){const b=P.ensureCostumeBanner(s,Date.now(),()=>.2);b.outfits=b.characterIds.map((id,i)=>({id:'outfit-'+i,characterId:id,name:'의상 '+i,imageKey:`outfit:${b.id}:${id}`}));for(const o of b.outfits)s.images[o.imageKey]='data:image/png;base64,AAAA';b.status='ready';return b;}
 test('costume gacha requires player level 5 and two owned characters',()=>{const s=E.createGame();assert.throws(()=>P.ensureCostumeBanner(s));s.player.xp=1000;s.owned={ael:s.owned.ael};assert.throws(()=>P.ensureCostumeBanner(s));});

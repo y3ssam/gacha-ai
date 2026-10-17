@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import * as E from '../src/engine.js';import * as V from '../src/events.js';import * as P from '../src/progression.js';
+import * as Engine from '../src/engine.js';import {createFixtureGame} from './fixtures/game.mjs';const E={...Engine,createGame:createFixtureGame};import * as V from '../src/events.js';import * as P from '../src/progression.js';
 const now=Date.UTC(2026,9,17,2);
 function game(){const s=E.createGame();s.created=now;s.events={anchor:now,seasons:[]};V.syncEvents(s,now);return s;}
 test('seasons roll over once, no retroactive missions, prior currency kept separate',()=>{const s=game(),a=V.syncEvents(s,now);V.recordEvent(s,'battles',3,now);a.currency=120;const b=V.syncEvents(s,now+V.SEASON_LENGTH);assert.notEqual(a.id,b.id);assert.equal(b.currency,0);assert.deepEqual(b.metrics,{});assert.equal(a.currency,120);V.syncEvents(s,now+V.SEASON_LENGTH);assert.equal(s.events.seasons.length,2);});

@@ -1,11 +1,14 @@
+import {createFixtureGame} from './fixtures/game.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
 // Rendering smoke tests with a minimal DOM surface. These are not visual browser tests.
 const nodes=new Map();function node(){return {innerHTML:'',textContent:'',style:{},open:false,classList:{add(){},remove(){}},addEventListener(){},append(){},remove(){},click(){},showModal(){this.open=true;},close(){this.open=false;},querySelector(){return {style:{}};}};}
 globalThis.document={querySelector:selector=>{if(!nodes.has(selector))nodes.set(selector,node());return nodes.get(selector);},body:node(),createElement:node};
 globalThis.localStorage={getItem(){return null;},setItem(){}};globalThis.sessionStorage={getItem(){return null;},setItem(){}};globalThis.window={addEventListener(){}};
 const storage=`let saves=new Map();export async function listGames(){return [...saves.values()]};export async function saveGame(s){saves.set(s.id,structuredClone(s))};export async function loadGame(id){return saves.get(id)};export async function deleteGame(id){saves.delete(id)};export function exportGame(){};export async function importGame(){};`;
-let source=await readFile(new URL('../src/app.js',import.meta.url),'utf8');for(const n of ['viewport','portraits','image-prompts','engine','data','ai','progression','events','event-ui','cosmetic-ui'])source=source.replace(`'./${n}.js'`,JSON.stringify(new URL(`../src/${n}.js`,import.meta.url).href));source=source.replace("'./storage.js'",JSON.stringify('data:text/javascript;base64,'+Buffer.from(storage).toString('base64')));source+='\nexport const harness={getState:()=>s,show:v=>{view=v;render();return app.innerHTML;},actions,detail:characterDetail,setStory:()=>{story={key:"1-1",chapter:1,stage:1,character:null,data:demoStory(1,1)};storyIndex=0;}};';
+let source=await readFile(new URL('../src/app.js',import.meta.url),'utf8');for(const n of ['reference-ui','viewport','portraits','image-prompts','engine','data','ai','progression','events','event-ui','cosmetic-ui'])source=source.replace(`'./${n}.js'`,JSON.stringify(new URL(`../src/${n}.js`,import.meta.url).href));source=source.replace("'./storage.js'",JSON.stringify('data:text/javascript;base64,'+Buffer.from(storage).toString('base64')));source+='\nexport const harness={getState:()=>s,show:v=>{view=v;render();return app.innerHTML;},actions,seed:game=>{s=game;render();},detail:characterDetail,setStory:()=>{story={key:"1-1",chapter:1,stage:1,character:null,data:{title:"테스트 장면",scenes:[{speaker:"동료",text:"테스트 대사"},{speaker:"",text:"다음 장면"}],choices:[]}};storyIndex=0;}};';
 const {harness}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const initial=structuredClone(harness.getState()),initialHtml=harness.show('home');harness.seed(createFixtureGame());
+test('first boot starts empty and exposes no provided game or demo action',()=>{assert.equal(initial.catalog.length,0);assert.equal(initial.party.length,0);assert.equal(initial.mode,'ai');assert.match(initialHtml,/생성된 세계가 없습니다/);assert.equal(harness.actions['create-demo'],undefined);});
 test('every main screen renders without runtime errors',()=>{for(const v of ['home','characters','party','gacha','story','dungeons','shop','bag','achievements','events','costumes','studio','settings']){const html=harness.show(v);assert.match(html,/<main[^>]*>/);assert.ok(!html.includes('undefined'),'undefined in '+v);}});
 test('character profile, scenario reader, and battle action screens render',async()=>{harness.detail('ael');assert.match(nodes.get('#modal').innerHTML,/아엘/);harness.setStory();assert.match(harness.show('reading'),/다음/);await harness.actions.dungeon({dataset:{tier:'1',dungeon:'gold'}});const html=harness.show('battle');assert.match(html,/일반 공격|기본 회복|기본 보호/);assert.match(html,/행동/);harness.show('home');});
 test('event pass, exchange and unlocked costume/gallery screens expose working actions',async()=>{
@@ -45,7 +48,7 @@ test('character detail separates growth, skills, equipment, profile, artwork and
   const html=nodes.get('#modal').innerHTML;
   assert.ok(html.includes(label),tab);assert.match(html,/class="detail-content stack"/);
   assert.match(html,new RegExp(`data-tab="${tab}" aria-pressed="true"`));
-  assert.equal(nodes.get('#modal').className,'character-dialog');
+  assert.match(nodes.get('#modal').className,/character-dialog/);
   if(tab!=='info')assert.ok(!html.includes('>레벨 강화<'));
   if(tab!=='prompts')assert.ok(!html.includes('NAI 일러스트 생성'));
  }
@@ -63,9 +66,22 @@ test('settings sections retain connection, backup and image retry controls in in
 });
 test('summoning actions are kept in a dedicated footer and player header uses real progression',()=>{
  const html=harness.show('gacha');
- assert.match(html,/<aside class="summon-selector"/);assert.match(html,/<footer class="summon-footer">/);
+ assert.match(html,/<aside class="summon-selector /);assert.match(html,/<footer class="summon-footer">/);
  assert.match(html,/<strong>1회 소환<\/strong>/);assert.match(html,/<strong>10회 소환<\/strong>/);
  assert.ok(html.indexOf('data-action="summon"')>html.indexOf('<footer class="summon-footer">'));
- assert.match(html,/class="player-status"/);assert.match(html,/aria-label="플레이어 경험치"/);assert.ok(!html.includes('GACHA AI'));
+ assert.match(html,/class="player-status /);assert.match(html,/aria-label="플레이어 경험치"/);assert.ok(!html.includes('GACHA AI'));
 });
-test('new empty world is preserved until valid generation succeeds',async()=>{nodes.set('#new-name',{value:'새 세계'});await harness.actions['create-slot']();const s=harness.getState();assert.equal(s.mode,'ai');assert.equal(s.catalog.length,0);assert.match(harness.show('studio'),/전체 지침/);assert.match(harness.show('home'),/미생성 세계/);});
+test('imported dungeon and inventory controls dispatch to real combat, enhancement and equipment systems',async()=>{
+ const state=harness.getState();state.battle=null;state.gold=100000;state.stamina=120;
+ const before=state.stamina;
+ harness.actions['dungeon-select']({dataset:{id:'gold'}});harness.actions['dungeon-tier']({dataset:{tier:'2'}});
+ const html=harness.show('dungeons');assert.match(html,/dungeon-floor-pane/);assert.match(html,/data-tier="2" aria-pressed="true"/);
+ assert.match(html,/assets\/reference\/dungeons\/gold.png/);assert.equal(state.stamina,before);
+ await harness.actions.dungeon({dataset:{dungeon:'gold',tier:'2'}});assert.equal(state.stamina,before-15);assert.equal(state.battle.level,20);
+ state.battle=null;
+ const gear={id:'ui-gear-test',slot:'weapon',rarity:3,level:0};state.equipment.push(gear);
+ harness.actions['inventory-select']({dataset:{id:gear.id}});assert.match(harness.show('bag'),/assets\/reference\/equipment\/pathfinder-weapon.png/);
+ harness.actions['gear-up']({dataset:{id:gear.id}});assert.equal(gear.level,1);
+ harness.actions.equip({dataset:{id:gear.id,character:'ael'}});assert.equal(state.owned.ael.gear.weapon,gear.id);
+});
+test('new empty world is preserved until valid generation succeeds',async()=>{nodes.set('#new-name',{value:'새 세계'});await harness.actions['create-slot']();const s=harness.getState();assert.equal(s.mode,'ai');assert.equal(s.catalog.length,0);assert.match(harness.show('studio'),/전체 지침/);assert.match(harness.show('home'),/생성된 세계가 없습니다/);});

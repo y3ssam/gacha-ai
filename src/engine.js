@@ -1,3 +1,4 @@
+import {hasVisualProfile,validateAppearance,validateClothing,validateCgPlan,normalizeCharacterPrompts} from './image-prompts.js';
 import {validateCampaign} from './generation.js';
 import {migrateProgress, grantPlayerXp, activeBanner, playerLevel, ensureCostumeBanner, COSTUME_UNLOCK} from './progression.js';
 import {syncEvents, recordEvent, eventSeason, eventBattleReward} from './events.js';
@@ -9,7 +10,7 @@ export function createGame(name='세계 1',demo=true){
  const catalog=demo?structuredClone(STARTERS):[];
  return migrateGame({version:1,mode:demo?'demo':'ai',id:uid(),name,created:Date.now(),world:structuredClone(DEFAULT_WORLD),directives:{...DIRECTIVES},catalog,owned:Object.fromEntries(catalog.map(c=>[c.id,{id:c.id,level:1,ascend:0,awaken:0,shards:0,skillLevel:1,gear:{},bond:0}])),party:catalog.map(c=>c.id),presets:[],gold:18000,gems:4800,xp:100,essence:30,stamina:120,staminaAt:Date.now(),pity:{standard:0,limited:0},guarantee:false,pull4:{standard:0,limited:0},history:[],equipment:[],stories:{},characterStories:{},choices:[],completed:[],claimed:[],quests:{battles:0,pulls:0,upgrades:0},images:{},imageJobs:{},chapter:1,settings:{autoImages:false},daily:'',battle:null});
 }
-export function migrateGame(s){migrateProgress(s);syncEvents(s);if(playerLevel(s).level>=COSTUME_UNLOCK&&Object.keys(s.owned).length>=2)ensureCostumeBanner(s);return s;}
+export function migrateGame(s){for(const c of s.catalog){const original=STARTERS.find(v=>v.id===c.id&&v.appearance===c.appearance);if(original&&!c.naiAppearance)Object.assign(c,{naiAppearance:structuredClone(original.naiAppearance),outfitPrompt:original.outfitPrompt,identityPrompt:original.identityPrompt,visualProfileVersion:2});}migrateProgress(s);syncEvents(s);if(playerLevel(s).level>=COSTUME_UNLOCK&&Object.keys(s.owned).length>=2)ensureCostumeBanner(s);return s;}
 export function recover(s,now=Date.now()){const ticks=Math.floor((now-s.staminaAt)/300000);if(ticks>0){s.stamina=Math.min(120,s.stamina+ticks);s.staminaAt+=ticks*300000;}return s;}
 export function charStats(c,o,equipment=[]){
  const role={striker:[560,94,30,105],guardian:[870,62,55,85],healer:[650,68,36,97],support:[630,74,34,110]}[c.role];
@@ -104,6 +105,12 @@ export function validateSave(s){if(!s||s.version!==1||!(/^[a-zA-Z0-9-]{1,80}$/.t
  migrateGame(s);validateExtensions(s);return s;}
 
 function validateExtensions(s){
+ for(const c of s.catalog)if(c.naiAppearance){validateAppearance(c.naiAppearance);validateClothing(c.outfitPrompt);}
+ if(s.world.protagonistVisual&&!hasVisualProfile(s.world.protagonistVisual))throw Error('주인공 외형 저장 오류');
+ const allowedImageIds=new Set([...s.catalog.map(c=>c.id),'protagonist']);
+ for(const story of [...Object.values(s.stories),...Object.values(s.characterStories)])if(story.cg)validateCgPlan(story.cg,allowedImageIds,s.cosmetics.outfits);
+ for(const release of s.live.releases)if(release.banner.imagePlan)validateCgPlan(release.banner.imagePlan,allowedImageIds,s.cosmetics.outfits);
+ for(const job of Object.values(s.imageJobs))if(job.characters)normalizeCharacterPrompts(job.characters);
  const integer=(x,min=0,max=Number.MAX_SAFE_INTEGER)=>Number.isInteger(x)&&x>=min&&x<=max;
  if(!integer(s.player.xp)||!integer(s.tickets)||!integer(s.costumeTickets)||!Array.isArray(s.live.releases)||!Number.isFinite(s.live.anchor)||!s.generation.jobs||!Array.isArray(s.enemyCatalog)||!Array.isArray(s.campaign))throw Error('확장 저장 규격 오류');
  for(const r of s.live.releases)if(!integer(r.cycle)||!r.banner||!Array.isArray(r.banner.poolIds)||r.banner.poolIds.some(id=>!s.catalog.some(c=>c.id===id))||!s.catalog.some(c=>c.id===r.banner.featuredId&&c.rarity===5))throw Error('배너 저장 오류');

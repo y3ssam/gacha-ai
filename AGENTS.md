@@ -13,8 +13,13 @@
 - Run npm run check and npm test before committing. State explicitly when live AI or browser visual verification could not be run.
 - Do not claim production balance or actual provider connectivity from mock/unit tests.
 
-- New world generation is staged in src/generation.js: bible, engine-owned character slots, enemy registry, 4-chapter campaign batches, banner. Validate references and persist checkpoints before advancing.
+- New world generation is staged in src/generation.js: bible, engine-owned character appearance slots, separate default outfits, enemy registry, 4-chapter campaign batches, banner. Validate references and persist checkpoints before advancing.
 - Never reroll frozen costume candidates on reload. Award only prepared images; cosmetic selection never changes stats. Check full requested draw budget before sampling randomness, then debit performed draws only.
 - Event progress is collected during active windows; grace permits claims/exchanges only. Keep prior season currency and claims separate. Settle each battle once, and never grant expired event currency to a new season.
 - Periodic Vertex releases run only in the open connected client, with per-cycle idempotency and no offline backlog. Failed cycles require manual retry; NAI calls stay tied to user game actions.
 - Preserve saved stories when adding characters. New characters may join only unread chapters via registered guest ids. Existing v1 saves must migrate without resetting currency, roster, or pity.
+
+- Character visual identity lives in naiAppearance (all defined fields), compiled identityPrompt, and a separate default outfitPrompt. Generate wardrobe after appearance; costume clothingPrompt never replaces immutable identity fields.
+- Use src/image-prompts.js for portraits, banners, CGs and costumes. Never flatten multiple characters into a base caption. Paid requests must contain one NAI char_caption/centers entry per visible person with aligned negative slots.
+- CG/banner manifests must list known character ids (protagonist has its own profile), clothing references, actions and distinct positions. Base caption is scene/style only. Reject missing/unknown/overlapping cast, more than six people, and unsupported NAI model versions rather than silently merging or truncating.
+- Preserve old art, owned outfit ids and narrative on migration. Upgrade legacy character/wardrobe/CG prompts lazily from confirmed content; retries must keep per-character prompt metadata.

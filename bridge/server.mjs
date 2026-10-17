@@ -1,3 +1,4 @@
+import {normalizeCharacterPrompts} from '../src/image-prompts.js';
 import http from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {resolve,extname} from 'node:path';
@@ -18,10 +19,13 @@ export function extractPng(zip){
  // Read central directory, including ZIPs using data descriptors. No files are written.
  for(let i=0;i+46<=zip.length;i++){if(zip.readUInt32LE(i)!==0x02014b50)continue;const method=zip.readUInt16LE(i+10),size=zip.readUInt32LE(i+20),outSize=zip.readUInt32LE(i+24),nameLen=zip.readUInt16LE(i+28),extra=zip.readUInt16LE(i+30),comment=zip.readUInt16LE(i+32),offset=zip.readUInt32LE(i+42);const name=zip.subarray(i+46,i+46+nameLen).toString();if(/\.(png|webp)$/i.test(name)){if(outSize>20*1024*1024||offset+30>zip.length)throw Error('이미지 크기 오류');const start=offset+30+zip.readUInt16LE(offset+26)+zip.readUInt16LE(offset+28);const compressed=zip.subarray(start,start+size);const data=method===0?compressed:method===8?inflateRawSync(compressed,{maxOutputLength:20*1024*1024}):null;if(!data)throw Error('지원하지 않는 ZIP');return {data,mime:name.endsWith('.webp')?'webp':'png'};}i+=45+nameLen+extra+comment;}throw Error('ZIP에서 이미지를 찾지 못했습니다.');
 }
-export function imageRequest(prompt,kind,model='nai-diffusion-4-5-full'){
- const negative='lowres, bad anatomy, text, logo, watermark, blurry';const input=`best quality, very aesthetic, detailed anime game illustration, ${prompt}`;
+export function imageRequest(prompt,kind,model='nai-diffusion-4-5-full',characterPrompts=[]){
+ const characters=normalizeCharacterPrompts(characterPrompts),supportsCharacters=/^nai-diffusion-(4|5)(?:-|$)/.test(model);
+ if(['portrait','banner','cg'].includes(kind)&&!characters.length)throw Error('인물 이미지에 개별 캐릭터 프롬프트가 필요합니다.');
+ if(characters.length&&!supportsCharacters)throw Error('개별 캐릭터 프롬프트는 NAI V4/V4.5/V5 모델을 선택하세요.');
+ const negative='lowres, bad anatomy, text, logo, watermark, blurry'+(kind==='background'?', people, humans, crowd, characters':'');const input=`best quality, very aesthetic, detailed anime game illustration, ${prompt}`;
  const parameters={params_version:3,width:kind==='portrait'||kind==='enemy'?832:1216,height:kind==='portrait'||kind==='enemy'?1216:832,scale:5,steps:28,sampler:'k_euler_ancestral',noise_schedule:'karras',n_samples:1,seed:randomBytes(4).readUInt32LE(),negative_prompt:negative,ucPreset:0,qualityToggle:true,sm:false,sm_dyn:false};
- if(model.includes('4')){parameters.v4_prompt={caption:{base_caption:input,char_captions:[]},use_coords:false,use_order:true};parameters.v4_negative_prompt={caption:{base_caption:negative,char_captions:[]},legacy_uc:false};}return {input,model,action:'generate',parameters};
+ if(supportsCharacters){parameters.v4_prompt={caption:{base_caption:input,char_captions:characters.map(c=>({char_caption:c.prompt,centers:[c.center]}))},use_coords:characters.length>0,use_order:true};parameters.v4_negative_prompt={caption:{base_caption:negative,char_captions:characters.map(c=>({char_caption:c.negativePrompt,centers:[c.center]}))},use_coords:characters.length>0,use_order:true,legacy_uc:false};}return {input,model,action:'generate',parameters};
 }
 export function makeServer(){return http.createServer(async(req,res)=>{
  const origin=req.headers.origin;res.setHeader('Vary','Origin');
@@ -54,7 +58,7 @@ export function makeServer(){return http.createServer(async(req,res)=>{
  const out=await r.json();const candidate=out.candidates?.[0];if(candidate?.finishReason!=='STOP')throw Error('AI 응답이 차단되거나 길이 제한으로 중단되었습니다. 지침을 조정해 재시도하세요.');const text=candidate.content?.parts?.filter(x=>!x.thought).map(x=>x.text||'').join('');let parsed;try{parsed=JSON.parse(text);}catch{throw Error('AI가 유효한 JSON을 반환하지 않았습니다. 재시도하세요.');}return json(res,200,parsed);
  }
  if(!config.naiToken)throw Error('NAI API 토큰을 연결하세요.');if(typeof data.prompt!=='string'||data.prompt.length>8000)throw Error('이미지 프롬프트 길이 오류');
- const r=await external('https://image.novelai.net/ai/generate-image',{method:'POST',headers:{Authorization:`Bearer ${config.naiToken}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(imageRequest(data.prompt,data.kind,config.imageModel))});
+ const r=await external('https://image.novelai.net/ai/generate-image',{method:'POST',headers:{Authorization:`Bearer ${config.naiToken}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(imageRequest(data.prompt,data.kind,config.imageModel,data.characters))});
  let image;if((r.headers.get('content-type')||'').includes('json')){const x=await r.json();const b64=x.images?.[0]?.image;if(!b64)throw Error('NAI 이미지 응답 오류');const bytes=Buffer.from(b64,'base64');const mime=bytes.subarray(0,4).toString()==='RIFF'?'webp':'png';image=`data:image/${mime};base64,${b64}`;}else{const x=extractPng(Buffer.from(await r.arrayBuffer()));image=`data:image/${x.mime};base64,${x.data.toString('base64')}`;}return json(res,200,{image});
  }finally{busy=false;}
  }

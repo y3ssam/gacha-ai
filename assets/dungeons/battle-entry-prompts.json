@@ -1,0 +1,16 @@
+{
+  "mode": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "style": "2D anime cel-shaded background",
+  "images": [
+    {
+      "id": "story-entry",
+      "prompt": "Use case: style-transfer. Repaint the provided winding journey road through a mountain valley as unmistakably TWO DIMENSIONAL JAPANESE ANIME GAME BACKGROUND ART. Keep the subject and centered perspective and portrait 1024x1536 2:3 canvas, no people or text. Completely replace the realistic rendering: clean hand-drawn ink contours, large simplified graphic shapes, distinct 2-3 tone cel shading, stylized angular mountains/architecture, broad grouped foliage, crisp illustrated edges and bright harmonious anime colors. Flat matte painted color fields, stylized cloud shapes. No photographic textures, no realistic weathering, no individual rock/grain/leaf microdetails, no volumetric rendering, no 3D, no realistic lens or cinematic photorealism. This should look like an anime fantasy adventure background drawing rather than a highly detailed realistic painting. Keep upper quarter subdued and low detail for title overlay, focal road/doorway in middle 65% width for clipped card. Full bleed, opaque, no border, no UI, no letters, no watermark."
+    },
+    {
+      "id": "materials-entry",
+      "prompt": "Use case: style-transfer. Repaint the provided open grand hall entrance as unmistakably TWO DIMENSIONAL JAPANESE ANIME GAME BACKGROUND ART. Keep the subject and centered perspective and portrait 1024x1536 2:3 canvas, no people or text. Completely replace the realistic rendering: clean hand-drawn ink contours, large simplified graphic shapes, distinct 2-3 tone cel shading, stylized angular mountains/architecture, broad grouped foliage, crisp illustrated edges and bright harmonious anime colors. Flat matte painted color fields, stylized cloud shapes. No photographic textures, no realistic weathering, no individual rock/grain/leaf microdetails, no volumetric rendering, no 3D, no realistic lens or cinematic photorealism. This should look like an anime fantasy adventure background drawing rather than a highly detailed realistic painting. Keep upper quarter subdued and low detail for title overlay, focal road/doorway in middle 65% width for clipped card. Full bleed, opaque, no border, no UI, no letters, no watermark."
+    }
+  ]
+}

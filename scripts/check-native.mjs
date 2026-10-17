@@ -1,0 +1,1 @@
+import {readdirSync} from 'node:fs';import {spawnSync} from 'node:child_process';for(const file of ['server.mjs','novelai.mjs','connection-store.mjs','src/game-engine.js','src/game-runtime.js','src/game-ui.js']){const r=spawnSync(process.execPath,['--check',file],{stdio:'inherit'});if(r.status!==0)process.exit(r.status||1);}

@@ -1,1 +1,697 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c1825"><title>Gacha AI</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="src/style.css"><link rel="stylesheet" href="src/reference.css"><link rel="stylesheet" href="src/integration.css"></head><body><div id="game-viewport"><div id="game-stage"><div id="app"><p class="boot">로컬 데이터 불러오는 중…</p></div><dialog id="modal" aria-labelledby="modal-title"></dialog><div id="toast" role="status" aria-live="polite"></div></div></div><script type="module" src="src/app.js"></script></body></html>
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>AI 가챠 게임</title>
+    <link rel="stylesheet" href="src/game.css">
+  </head>
+  <body>
+    <div class="game-frame" data-theme="dark">
+      <aside class="sidebar" aria-label="게임 기본 설정">
+        <div class="brand" role="img" aria-label="AI 가챠 게임">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M16 3 19.5 12.5 29 16 19.5 19.5 16 29 12.5 19.5 3 16 12.5 12.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+            <circle cx="16" cy="16" r="3" fill="currentColor" />
+          </svg>
+        </div>
+        <nav aria-label="설정 메뉴">
+          <a class="nav-item" id="worlds-nav" href="#worlds">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <ellipse cx="12" cy="12" rx="4" ry="9" />
+              <path d="M3 12h18M5 6.5h14M5 17.5h14" />
+            </svg>
+            <span>세계관</span>
+          </a>
+          <a class="nav-item" id="lorebook-nav" href="#lorebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5.5C9 3.5 5.5 3.5 3 4.5v15c2.5-1 6-1 9 1 3-2 6.5-2 9-1v-15c-2.5-1-6-1-9 1Z" />
+              <path d="M12 5.5v15M6 8h3m-3 4h3m6-4h3m-3 4h3" />
+            </svg>
+            <span>로어북</span>
+          </a>
+          <a class="nav-item" id="ai-connection-nav" href="#ai-connection" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="5" width="14" height="14" rx="4" />
+              <path d="M9 1v4m6-4v4M9 19v4m6-4v4M1 9h4m-4 6h4m14-6h4m-4 6h4" />
+              <rect x="9" y="9" width="6" height="6" rx="1" />
+            </svg>
+            <span>AI 연결</span>
+          </a>
+          <a class="nav-item" id="game-nav" href="#game-preview" aria-label="게임으로 <">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10 8H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-5M14 3h7v7M21 3 10 14" />
+            </svg>
+            <span>게임으로 &lt;</span>
+          </a>
+        </nav>
+      </aside>
+      <main class="content" id="ai-connection" aria-labelledby="page-title">
+        <header class="content-header">
+          <h1 id="page-title">AI 연결</h1>
+          <p id="page-description">스토리를 만드는 AI와 이미지를 그리는 AI를 연결하세요.</p>
+        </header>
+        <div class="content-body" id="game-preview" aria-label="게임 화면" hidden>
+          <div class="game-settings-row">
+            <div class="game-player-status" aria-label="플레이어 정보 · 임시 표시">
+              <span class="game-player-name" id="game-player-name">지휘관</span>
+              <div class="game-rank"><span>랭크</span><strong id="game-player-rank">1</strong></div>
+              <div class="game-experience">
+                <div class="game-experience-label"><span>경험치</span><span id="game-player-exp">0 / 100</span></div>
+                <progress id="game-player-exp-bar" value="0" max="100" aria-label="랭크 경험치" aria-valuetext="100 중 0">0%</progress>
+              </div>
+              <button class="game-home-button" id="game-home" type="button" aria-label="홈" title="홈" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z" /></svg>
+              </button>
+            </div>
+            <div class="game-top-actions">
+              <div class="game-currencies" aria-label="보유 재화">
+                <div class="game-currency" aria-label="다이아 0"><svg class="currency-diamond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 4-5h10l4 5-9 13Z M3 8h18M7 3l5 18 5-18" /></svg><span id="game-diamonds">0</span></div>
+                <div class="game-currency" aria-label="골드 0"><svg class="currency-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M15 8h-4a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4H9m3-10v12" /></svg><span id="game-gold">0</span></div>
+                <div class="game-currency game-energy" id="game-energy" tabindex="0" aria-label="에너지 50 / 50" aria-describedby="energy-tooltip">
+                  <svg class="currency-energy" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8L20 9h-7l1-7Z" /></svg><span id="game-energy-value">50 / 50</span>
+                  <span class="energy-tooltip" id="energy-tooltip" role="tooltip">에너지 가득 참</span>
+                </div>
+              </div>
+            <button class="game-settings-button" id="game-settings" type="button" aria-label="설정" title="설정">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z" /><circle cx="12" cy="12" r="3" /></svg>
+            </button>
+            </div>
+          </div>
+          <div class="game-stage" id="game-stage">
+            <section class="dungeon-screen" id="materials-screen" aria-labelledby="materials-title" hidden>
+              <div class="dungeon-screen-heading"><button class="connection-back" id="materials-back" type="button" aria-label="전투 메뉴로 돌아가기">◀</button><h2 id="materials-title">재료 던전</h2><p class="dungeon-reset">한국 시간 자정에 속성 변경<strong id="materials-reset-countdown"></strong></p></div>
+              <div class="dungeon-selection-scroll" id="dungeon-selection-scroll"><div class="dungeon-selection-track" id="dungeon-selection-track"></div></div>
+            </section>
+            <section class="dungeon-screen" id="material-dungeon-screen" aria-labelledby="material-dungeon-title" hidden>
+              <div class="dungeon-screen-heading"><button class="connection-back" id="material-dungeon-back" type="button" aria-label="재료 던전 목록으로 돌아가기">◀</button><h2 id="material-dungeon-title"></h2><p class="dungeon-reset">한국 시간 자정에 속성 변경<strong id="dungeon-reset-countdown"></strong></p></div>
+              <div class="dungeon-detail-layout">
+                <div class="dungeon-detail-art"><img id="dungeon-detail-image" alt="" /><div class="dungeon-detail-caption"><h3 id="dungeon-detail-name"></h3><div><p class="dungeon-reward-heading">주요 보상</p><div class="dungeon-rewards" id="dungeon-rewards"></div></div></div></div>
+                <aside class="dungeon-floor-pane" aria-label="던전 층 선택"><h3>층 선택</h3><div class="dungeon-floor-list" id="dungeon-floor-list"></div><div class="dungeon-floor-footer"><p class="dungeon-prepare-status" id="dungeon-prepare-status" role="status"></p><button class="dungeon-prepare" id="dungeon-prepare" type="button">전투 준비</button></div></aside>
+              </div>
+            </section>
+            <section class="summon-screen" id="summon-screen" aria-labelledby="summon-title" hidden>
+              <h2 id="summon-title">소환</h2>
+              <div class="summon-layout">
+                <div class="summon-banner-list" id="summon-banner-list" role="tablist" aria-label="소환 배너" aria-orientation="vertical"></div>
+                <section class="summon-banner" id="summon-banner" role="tabpanel" aria-label="선택한 소환 배너">
+                  <div class="summon-banner-art" id="summon-banner-art"></div>
+                  <div class="summon-banner-top">
+                    <div class="summon-banner-heading"><span class="summon-banner-kind" id="summon-banner-kind"></span><h3 id="summon-banner-name"></h3><p id="summon-banner-description"></p></div>
+                    <div class="summon-banner-actions">
+                      <button class="summon-overlay-button summon-regenerate" id="summon-regenerate" type="button" aria-label="배너 이미지 재생성" title="배너 이미지 재생성"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6 6a8 8 0 0 1 13 3l1 3M4 12l1 3a8 8 0 0 0 13 3"/></svg></button>
+                      <button class="summon-overlay-button" id="summon-history" type="button">소환 기록</button>
+                      <button class="summon-overlay-button" id="summon-appearances" type="button">출현 목록</button>
+                    </div>
+                  </div>
+                  <div class="summon-banner-bottom"><p class="summon-status" id="summon-status" role="status" aria-live="polite"></p><div class="summon-pull-actions"><button class="summon-pull" id="summon-once" type="button">1회 소환</button><button class="summon-pull" id="summon-ten" type="button">10회 소환</button></div></div>
+                </section>
+              </div>
+              <dialog class="summon-dialog" id="summon-dialog" aria-labelledby="summon-dialog-title" aria-describedby="summon-dialog-subtitle">
+                <div class="summon-dialog-heading"><div><h2 id="summon-dialog-title"></h2><p id="summon-dialog-subtitle"></p></div><button class="summon-dialog-close" id="summon-dialog-close" type="button" aria-label="닫기">×</button></div>
+                <div class="summon-dialog-body" id="summon-dialog-body"></div>
+              </dialog>
+            </section>
+            <section class="inventory-screen" id="inventory-screen" aria-labelledby="inventory-title" hidden>
+              <h2 id="inventory-title">인벤토리</h2>
+              <div class="inventory-layout">
+                <nav class="inventory-categories" role="tablist" aria-label="아이템 구분" aria-orientation="vertical">
+                  <button class="inventory-category" id="inventory-tab-equipment" type="button" role="tab" aria-selected="true" aria-controls="inventory-content" data-inventory-category="equipment">장비</button>
+                  <button class="inventory-category" id="inventory-tab-materials" type="button" role="tab" aria-selected="false" aria-controls="inventory-content" tabindex="-1" data-inventory-category="materials">재료</button>
+                  <button class="inventory-category" id="inventory-tab-consumables" type="button" role="tab" aria-selected="false" aria-controls="inventory-content" tabindex="-1" data-inventory-category="consumables">소비</button>
+                </nav>
+                <div class="inventory-content" id="inventory-content" role="tabpanel" aria-labelledby="inventory-tab-equipment">
+                  <div class="inventory-toolbar"><div class="inventory-filters" id="inventory-filters" role="tablist" aria-label="부위별 장비"></div><span class="inventory-count" id="inventory-count" aria-live="polite"></span></div>
+                  <div class="inventory-body" id="inventory-body" data-category="equipment">
+                    <div class="inventory-item-scroll" id="inventory-item-scroll"><div class="inventory-item-grid" id="inventory-item-grid"></div></div>
+                    <aside class="inventory-details" id="inventory-details" aria-label="장비 옵션"><h3>장비 정보</h3><div id="inventory-equipment-details"></div></aside>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="party-screen" id="party-screen" aria-labelledby="party-title" hidden>
+              <div class="party-heading"><h2 id="party-title" tabindex="-1">편성</h2></div>
+              <div class="party-layout-frame"><div class="party-layout">
+                <div class="party-rows">
+                  <section class="party-row" aria-labelledby="party-front-title"><div class="party-row-heading"><h3 id="party-front-title">전열</h3><span id="party-count" aria-live="polite">0 / 6</span></div><div class="party-slots" id="party-front"></div></section>
+                  <section class="party-row" aria-labelledby="party-back-title"><h3 id="party-back-title">후열</h3><div class="party-slots" id="party-back"></div></section>
+                </div>
+                <aside class="party-roster" aria-labelledby="party-roster-title"><h3 id="party-roster-title">내 캐릭터</h3><div class="party-roster-list" id="party-roster-list"></div></aside>
+                <aside class="party-formations" aria-labelledby="party-formations-title"><h3 id="party-formations-title">편성 목록</h3><div class="party-formation-list" id="party-formation-list"></div><button class="party-stage-enter" id="party-stage-enter" type="button" hidden>전투 진입</button></aside>
+              </div></div>
+              <div class="folder-menu" id="party-formation-menu" role="menu" aria-label="편성 관리" hidden>
+                <button type="button" role="menuitem" data-action="rename">이름 변경</button>
+                <button type="button" role="menuitem" data-action="delete">삭제</button>
+              </div>
+              <dialog class="folder-dialog" id="party-delete-dialog" aria-labelledby="party-delete-title" aria-describedby="party-delete-message">
+                <h2 id="party-delete-title">편성 삭제</h2>
+                <p class="folder-delete-message" id="party-delete-message"></p>
+                <div class="folder-dialog-actions">
+                  <button class="world-secondary" id="party-delete-cancel" type="button" autofocus>취소</button>
+                  <button class="save-connection-button folder-delete-button" id="party-delete-confirm" type="button">삭제</button>
+                </div>
+              </dialog>
+            </section>
+            <section class="characters-screen" id="characters-screen" aria-label="캐릭터 목록" hidden>
+              <div class="characters-toolbar">
+                <div class="character-search-field">
+                  <label for="character-search">캐릭터 목록</label>
+                <div class="character-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg>
+                  <input class="connection-input" id="character-search" type="search" aria-label="캐릭터 검색" placeholder="캐릭터 이름 검색" autocomplete="off" />
+                </div>
+                </div>
+                <div class="character-filters" aria-label="캐릭터 필터와 정렬">
+                  <div class="character-filter"><label for="character-role">역할</label><select class="connection-input" id="character-role"><option value="all">전체</option><option value="warrior">전사</option><option value="knight">기사</option><option value="swordsman">검사</option><option value="assassin">암살자</option><option value="tactician">전술가</option><option value="hunter">사냥꾼</option><option value="mage">마법사</option><option value="healer">치유사</option></select></div>
+                  <div class="character-filter"><label for="character-element">속성</label><select class="connection-input" id="character-element"><option value="all">전체</option><option value="fire">불</option><option value="water">물</option><option value="wind">바람</option><option value="earth">땅</option><option value="electric">전기</option><option value="ice">얼음</option><option value="grass">풀</option><option value="light">빛</option><option value="dark">어둠</option></select></div>
+                  <div class="character-filter"><label for="character-sort">정렬</label><select class="connection-input" id="character-sort"><option value="rarity">희귀도순</option><option value="power">전투력순</option><option value="level">레벨순</option><option value="new">신규순</option></select></div>
+                </div>
+              </div>
+              <div class="character-card-grid" aria-label="캐릭터 카드 목록"></div>
+            </section>
+            <section class="character-detail-screen" id="character-detail-screen" aria-label="캐릭터 상세" hidden>
+              <div class="character-detail-heading">
+                <button class="connection-back" id="character-detail-back" type="button" aria-label="캐릭터 목록으로 돌아가기" title="캐릭터 목록으로 돌아가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg></button>
+                <h2 id="character-detail-name"></h2>
+                <div class="character-detail-meta"><span class="character-detail-level" id="character-detail-level"></span><span class="character-detail-stars" id="character-detail-stars"></span></div>
+                <div class="character-detail-actions" role="tablist" aria-label="캐릭터 메뉴">
+                  <button class="character-detail-action" id="character-tab-info" role="tab" aria-selected="true" aria-controls="character-panel-info" type="button">정보</button>
+                  <button class="character-detail-action" id="character-tab-equipment" role="tab" aria-selected="false" aria-controls="character-panel-equipment" tabindex="-1" type="button">장비</button>
+                  <button class="character-detail-action" id="character-tab-skills" role="tab" aria-selected="false" aria-controls="character-panel-skills" tabindex="-1" type="button">스킬</button>
+                  <button class="character-detail-action" id="character-tab-awakening" role="tab" aria-selected="false" aria-controls="character-panel-awakening" tabindex="-1" type="button">각성</button>
+                  <button class="character-detail-action" id="character-tab-outfits" role="tab" aria-selected="false" aria-controls="character-panel-outfits" tabindex="-1" type="button">의상</button>
+                  <button class="character-detail-action" id="character-tab-affinity" role="tab" aria-selected="false" aria-controls="character-panel-affinity" tabindex="-1" type="button">호감도</button>
+                  <button class="character-detail-action" id="character-tab-profile" role="tab" aria-selected="false" aria-controls="character-panel-profile" tabindex="-1" type="button">프로필</button>
+                </div>
+              </div>
+              <div class="character-detail-body">
+                <div class="character-detail-illustration" id="character-detail-illustration" role="img" aria-label="캐릭터 일러스트 영역"></div>
+                <div class="character-detail-panel" id="character-panel-info" role="tabpanel" aria-labelledby="character-tab-info" tabindex="0">
+                  <div class="character-info">
+                    <div class="character-info-summary">
+                      <div class="character-info-power"><span class="character-info-label">전투력</span><strong id="character-info-power"></strong></div>
+                      <div class="character-info-growth">
+                        <p class="character-info-level"><span class="character-info-label">레벨</span><strong id="character-info-level"></strong></p>
+                        <button class="character-growth-button" id="character-growth-button" type="button">레벨업</button>
+                      </div>
+                    </div>
+                    <div class="character-info-exp">
+                      <div class="character-info-exp-label"><span>경험치</span><span id="character-info-exp-count"></span></div>
+                      <progress id="character-info-exp-bar" max="100" value="0" aria-label="캐릭터 경험치"></progress>
+                    </div>
+                    <dl class="character-info-traits">
+                      <div><dt>속성</dt><dd id="character-info-element"></dd></div>
+                      <div><dt>클래스</dt><dd id="character-info-class"></dd></div>
+                    </dl>
+                    <h3 class="character-info-stats-heading">스탯</h3>
+                    <dl class="character-info-stats">
+                      <div><dt>체력</dt><dd id="character-stat-hp"></dd></div>
+                      <div><dt>공격력</dt><dd id="character-stat-attack"></dd></div>
+                      <div><dt>방어력</dt><dd id="character-stat-defense"></dd></div>
+                      <div><dt>속도</dt><dd id="character-stat-speed"></dd></div>
+                      <div><dt>치명타 확률</dt><dd id="character-stat-crit-rate"></dd></div>
+                      <div><dt>치명타 피해</dt><dd id="character-stat-crit-damage"></dd></div>
+                      <div><dt>효과 적중</dt><dd id="character-stat-effect-hit"></dd></div>
+                      <div><dt>효과 저항</dt><dd id="character-stat-effect-resist"></dd></div>
+                    </dl>
+                  </div>
+                </div>
+                <div class="character-detail-panel" id="character-panel-equipment" role="tabpanel" aria-labelledby="character-tab-equipment" tabindex="0" hidden>
+                  <div class="character-equipment">
+                    <h3>착용 장비</h3>
+                    <div class="character-equipment-overview">
+                      <div class="character-equipment-slots" id="character-equipment-slots" role="group" aria-label="장비 슬롯"></div>
+                      <section class="character-equipment-box" aria-labelledby="character-equipment-stats-title"><h4 id="character-equipment-stats-title">현재 스탯</h4><dl class="character-equipment-stat-grid" id="character-equipment-stats"></dl></section>
+                    </div>
+                    <section class="character-equipment-box" aria-labelledby="character-equipment-sets-title"><h4 id="character-equipment-sets-title">세트 효과</h4><div id="character-equipment-sets"></div></section>
+                  </div>
+                </div>
+                <div class="character-detail-panel" id="character-panel-skills" role="tabpanel" aria-labelledby="character-tab-skills" tabindex="0" hidden>
+                  <div class="character-skills">
+                    <div class="character-skill-picker" id="character-skill-picker" role="tablist" aria-label="스킬 선택" aria-orientation="vertical">
+                      <button class="character-skill-selector" id="skill-select-basic" type="button" role="tab" aria-selected="true" aria-controls="skill-detail-basic" data-skill-target="basic"><span class="character-skill-selector-icon" aria-hidden="true"><span class="character-skill-selector-art"></span><span class="character-skill-selector-level">1</span></span><span>기본 스킬</span></button>
+                      <button class="character-skill-selector" id="skill-select-active" type="button" role="tab" aria-selected="false" aria-controls="skill-detail-active" tabindex="-1" data-skill-target="active"><span class="character-skill-selector-icon" aria-hidden="true"><span class="character-skill-selector-art"></span><span class="character-skill-selector-level">1</span></span><span>액티브</span></button>
+                      <button class="character-skill-selector" id="skill-select-ultimate" type="button" role="tab" aria-selected="false" aria-controls="skill-detail-ultimate" tabindex="-1" data-skill-target="ultimate"><span class="character-skill-selector-icon" aria-hidden="true"><span class="character-skill-selector-art"></span><span class="character-skill-selector-level">1</span></span><span>궁극기</span></button>
+                      <button class="character-skill-selector" id="skill-select-passive" type="button" role="tab" aria-selected="false" aria-controls="skill-detail-passive" tabindex="-1" data-skill-target="passive"><span class="character-skill-selector-icon" aria-hidden="true"><span class="character-skill-selector-art"></span><span class="character-skill-selector-level">1</span></span><span>패시브</span></button>
+                    </div>
+                    <div class="character-skill-content">
+                    <article class="character-skill" id="skill-detail-basic" data-skill="basic" role="tabpanel" aria-labelledby="skill-select-basic" tabindex="0">
+                      <div class="character-skill-heading"><div class="character-skill-title"><h3>검의 궤적</h3><span class="character-skill-type">기본 스킬</span></div><span class="character-skill-cooldown">쿨타임 없음</span></div>
+                      <p class="character-skill-description">적 하나를 공격하는 기본 스킬입니다.</p>
+                      <ol class="character-skill-upgrades" start="2" aria-label="기본 스킬 레벨별 강화 효과"></ol>
+                      <div class="character-skill-footer"><span class="character-skill-level" aria-live="polite">Lv. 1 / 10</span><button class="character-growth-button" type="button" aria-label="무작위 스킬 강화">스킬 강화</button></div>
+                    </article>
+                    <article class="character-skill" id="skill-detail-active" data-skill="active" role="tabpanel" aria-labelledby="skill-select-active" tabindex="0" hidden>
+                      <div class="character-skill-heading"><div class="character-skill-title"><h3>돌파의 일격</h3><span class="character-skill-type">액티브</span></div><span class="character-skill-cooldown" id="character-active-cooldown"></span></div>
+                      <p class="character-skill-description">캐릭터 고유의 능력을 사용합니다.</p>
+                      <ol class="character-skill-upgrades" start="2" aria-label="액티브 스킬 레벨별 강화 효과"></ol>
+                      <div class="character-skill-footer"><span class="character-skill-level" aria-live="polite">Lv. 1 / 10</span><button class="character-growth-button" type="button" aria-label="무작위 스킬 강화">스킬 강화</button></div>
+                    </article>
+                    <article class="character-skill" id="skill-detail-ultimate" data-skill="ultimate" role="tabpanel" aria-labelledby="skill-select-ultimate" tabindex="0" hidden>
+                      <div class="character-skill-heading"><div class="character-skill-title"><h3>새벽을 가르는 빛</h3><span class="character-skill-type">궁극기</span></div><span class="character-skill-cooldown">전투 에너지 100%</span></div>
+                      <p class="character-skill-description">캐릭터의 강력한 고유 능력을 사용하는 스킬입니다. 해당 캐릭터의 전투 에너지 게이지가 100%일 때 사용할 수 있습니다.</p>
+                      <ol class="character-skill-upgrades" start="2" aria-label="궁극기 레벨별 강화 효과"></ol>
+                      <div class="character-skill-footer"><span class="character-skill-level" aria-live="polite">Lv. 1 / 10</span><button class="character-growth-button" type="button" aria-label="무작위 스킬 강화">스킬 강화</button></div>
+                    </article>
+                    <article class="character-skill" id="skill-detail-passive" data-skill="passive" role="tabpanel" aria-labelledby="skill-select-passive" tabindex="0" hidden>
+                      <div class="character-skill-heading"><div class="character-skill-title"><h3>불굴의 의지</h3><span class="character-skill-type">패시브</span></div><span class="character-skill-cooldown">자동 효과</span></div>
+                      <p class="character-skill-description">전투 중 조건을 만족하면 자동으로 효과가 적용됩니다.</p>
+                      <ol class="character-skill-upgrades" start="2" aria-label="패시브 레벨별 강화 효과"></ol>
+                      <div class="character-skill-footer"><span class="character-skill-level" aria-live="polite">Lv. 1 / 10</span><button class="character-growth-button" type="button" aria-label="무작위 스킬 강화">스킬 강화</button></div>
+                    </article>
+                    </div>
+                  </div>
+                </div>
+                <div class="character-detail-panel" id="character-panel-awakening" role="tabpanel" aria-labelledby="character-tab-awakening" tabindex="0" hidden>
+                  <div class="character-awakening">
+                    <div class="character-awakening-heading"><h3>각성 단계</h3><span class="character-awakening-stage" id="character-awakening-stage" aria-live="polite">0 / 10</span></div>
+                    <p class="character-awakening-note">소환에서 동일한 캐릭터를 다시 획득하면 자동으로 각성이 1단계 올라갑니다. 최초 획득 시 0단계이며, 최대 10단계까지 각성할 수 있습니다.</p>
+                    <ol class="character-awakening-track" id="character-awakening-track" aria-label="각성 단계 진행 현황"></ol>
+                    <p class="character-awakening-note" id="character-awakening-status"></p>
+                    <h3 class="character-awakening-effects-heading">스킬 강화 효과</h3>
+                    <dl class="character-awakening-effects">
+                      <div><dt>기본 스킬</dt><dd>각성에 따른 기본 스킬 강화 효과가 여기에 표시됩니다.</dd></div>
+                      <div><dt>액티브 스킬</dt><dd>각성에 따른 액티브 스킬 강화 효과가 여기에 표시됩니다.</dd></div>
+                      <div><dt>궁극기</dt><dd>각성에 따른 궁극기 강화 효과가 여기에 표시됩니다.</dd></div>
+                      <div><dt>패시브</dt><dd>각성에 따른 패시브 강화 효과가 여기에 표시됩니다.</dd></div>
+                    </dl>
+                  </div>
+                </div>
+                <div class="character-detail-panel" id="character-panel-outfits" role="tabpanel" aria-labelledby="character-tab-outfits" tabindex="0" hidden>
+                  <div class="character-outfits">
+                    <div class="character-outfits-heading"><h3>보유 의상</h3><span class="character-outfits-count" id="character-outfits-count"></span></div>
+                    <p class="character-awakening-note">의상을 선택한 뒤 착용하면 캐릭터 일러스트가 해당 의상의 이미지로 바뀝니다.</p>
+                    <div class="character-outfit-list" id="character-outfit-list" role="group" aria-label="보유 의상 선택"></div>
+                    <div class="character-outfit-footer"><p class="character-outfit-status" id="character-outfit-status" aria-live="polite"></p><button class="character-growth-button" id="character-outfit-equip" type="button">착용</button></div>
+                  </div>
+                </div>
+                <div class="character-detail-panel" id="character-panel-affinity" role="tabpanel" aria-labelledby="character-tab-affinity" tabindex="0" hidden>
+                  <div class="character-affinity">
+                    <div class="character-affinity-heading"><h3>호감도</h3><span class="character-affinity-value" id="character-affinity-value">1 / 10</span></div>
+                    <progress class="character-affinity-progress" id="character-affinity-progress" max="10" value="1" aria-label="캐릭터 호감도"></progress>
+                    <p class="character-awakening-note" id="character-affinity-next"></p>
+                    <h3 class="character-affinity-story-heading">스토리</h3>
+                    <div class="character-affinity-stories" aria-label="캐릭터 스토리 목록">
+                      <article class="character-affinity-story" data-required-affinity="3"><div class="character-affinity-story-top"><h4>캐릭터 스토리 1</h4><span class="character-affinity-story-status"></span></div><p>호감도 3 달성 시 해금</p></article>
+                      <article class="character-affinity-story" data-required-affinity="6"><div class="character-affinity-story-top"><h4>캐릭터 스토리 2</h4><span class="character-affinity-story-status"></span></div><p>호감도 6 달성 시 해금</p></article>
+                      <article class="character-affinity-story" data-required-affinity="9"><div class="character-affinity-story-top"><h4>캐릭터 스토리 3</h4><span class="character-affinity-story-status"></span></div><p>호감도 9 달성 시 해금</p></article>
+                    </div>
+                  </div>
+                </div>
+                <div class="character-detail-panel" id="character-panel-profile" role="tabpanel" aria-labelledby="character-tab-profile" tabindex="0" hidden>
+                  <div class="character-profile">
+                    <h3>캐릭터 프로필</h3>
+                    <dl class="character-profile-fields" id="character-profile-fields"></dl>
+                    <section class="character-profile-background" aria-labelledby="character-profile-background-heading">
+                      <h3 id="character-profile-background-heading">배경 이야기</h3>
+                      <div id="character-profile-background"></div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <dialog class="skill-upgrade-dialog" id="skill-upgrade-dialog" aria-labelledby="skill-upgrade-title">
+              <div class="skill-upgrade-dialog-heading"><h2 id="skill-upgrade-title">스킬 강화</h2><button class="connection-back" id="skill-upgrade-close" type="button" aria-label="스킬 강화 창 닫기">×</button></div>
+              <div class="skill-upgrade-dialog-body">
+                <div class="skill-upgrade-targets" id="skill-upgrade-targets" aria-label="강화 대상 스킬"></div>
+                <div class="skill-upgrade-cost"><span id="skill-upgrade-gold-cost"></span><span id="skill-upgrade-gold-owned"></span></div>
+                <fieldset class="skill-upgrade-materials" id="skill-upgrade-materials"><legend>강화 재료 · 1개 사용</legend><div id="skill-upgrade-material-options"></div></fieldset>
+                <p class="skill-upgrade-result" id="skill-upgrade-result" aria-live="polite"></p>
+              </div>
+              <div class="skill-upgrade-dialog-footer"><button class="character-growth-button" id="skill-upgrade-cancel" type="button">취소</button><button class="character-growth-button" id="skill-upgrade-confirm" type="button">강화</button></div>
+            </dialog>
+            <section class="equipment-picker-screen" id="equipment-picker-screen" aria-label="장비 선택 화면" hidden>
+              <div class="equipment-picker-heading"><button class="connection-back" id="character-equipment-back" type="button" aria-label="장비 탭으로 돌아가기">◀</button><h2 id="character-equipment-list-title">보유 장비</h2></div>
+              <div class="equipment-picker-layout">
+                <div class="equipment-picker-list-pane"><div class="character-equipment-list" id="character-equipment-list" role="group" aria-label="장착할 장비 선택"></div></div>
+                <aside class="equipment-comparison" aria-label="장비 정보">
+                  <div class="equipment-comparison-card" id="equipment-selected-details" aria-label="장비 정보"></div>
+                  <button class="character-growth-button" id="equipment-enhance-selected" type="button" disabled>강화</button>
+                  <button class="character-growth-button" id="equipment-confirm" type="button" disabled>장착</button>
+                </aside>
+              </div>
+            </section>
+            <section class="equipment-picker-screen" id="equipment-enhancement-screen" aria-label="장비 강화 화면" hidden>
+              <div class="equipment-picker-heading"><button class="connection-back" id="equipment-enhancement-back" type="button" aria-label="강화 화면에서 돌아가기">◀</button><h2 id="equipment-enhancement-title">장비 강화</h2></div>
+              <div class="equipment-enhancement-body">
+                <div class="equipment-enhancement-layout">
+                  <div class="equipment-enhancement-art" aria-hidden="true"><div class="equipment-enhancement-emblem" id="equipment-enhancement-emblem"></div></div>
+                  <div class="equipment-enhancement-details" id="equipment-enhancement-details"></div>
+                </div>
+                <div class="equipment-enhancement-footer"><p class="equipment-enhancement-message" id="equipment-enhancement-status" aria-live="polite"></p><div class="equipment-enhancement-cost"><p class="equipment-enhancement-message" id="equipment-enhancement-cost"></p><button class="character-growth-button" id="equipment-enhancement-confirm" type="button">강화</button></div></div>
+              </div>
+            </section>
+            <div class="equipment-hover" id="equipment-hover" role="tooltip" hidden></div>
+            <div class="folder-menu equipment-context-menu" id="equipment-context-menu" role="menu" aria-label="장비 관리" hidden><button type="button" role="menuitem" data-equipment-action="enhance">강화</button><button type="button" role="menuitem" data-equipment-action="replace">교체</button><button type="button" role="menuitem" data-equipment-action="remove">해제</button></div>
+            <section class="story-preview-screen" id="combat-preview-screen" aria-label="전투" hidden>
+              <div class="battle-briefing" id="battle-briefing" role="dialog" aria-modal="true" aria-labelledby="battle-briefing-objective" aria-describedby="battle-briefing-description" hidden>
+                <button class="story-preview-back battle-briefing-back" id="battle-briefing-back" type="button" aria-label="편성으로 돌아가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+                <div class="battle-briefing-content"><p class="battle-briefing-label">목표</p><p class="battle-briefing-description" id="battle-briefing-description"></p><h2 class="battle-briefing-objective" id="battle-briefing-objective">모든 적을 처치하세요.</h2><p class="battle-briefing-stage" id="battle-briefing-stage"></p><div class="battle-briefing-enemies" id="battle-briefing-enemies" aria-label="등장하는 적"></div><p class="battle-enemy-description" id="battle-enemy-description" aria-live="polite"></p><button class="party-stage-enter battle-briefing-start" id="battle-briefing-start" type="button">전투 시작</button></div>
+              </div>
+              <div class="combat-arena">
+                <div class="combat-turns"><div class="combat-turn-list" id="combat-turn-list" role="list" aria-label="속도에 따른 행동 순서"></div></div>
+                <div class="combat-enemy-side"><ul class="combat-line" id="combat-enemies" aria-label="적군"></ul></div>
+                <div class="combat-allied-side">
+                  <ul class="combat-line" id="combat-allies" aria-label="아군"></ul>
+                  <div class="combat-skills"><p class="combat-action-hint" id="combat-action-hint" hidden></p><div class="combat-skill-grid" id="combat-skill-grid" aria-label="현재 캐릭터의 스킬"></div></div>
+                </div>
+              </div>
+              <div class="combat-skill-tooltip" id="combat-skill-tooltip" role="tooltip" hidden></div>
+              <div class="combat-ultimate" id="combat-ultimate" hidden aria-live="polite"></div>
+              <div class="story-preview-top">
+                <div class="story-preview-heading-row">
+                  <button class="story-preview-back" id="combat-preview-back" type="button" aria-label="시나리오 목록으로 돌아가기" title="시나리오 목록으로 돌아가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg></button>
+                  <div class="story-preview-titles"><h2 id="combat-preview-title"></h2><p id="combat-preview-chapter"></p></div>
+                  <div class="story-preview-actions">
+                    <button class="story-control-button story-icon-button" id="combat-auto" type="button" aria-label="전투 자동진행" title="전투 자동진행" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m8 5 11 7-11 7Z" /></svg></button>
+                    <button class="story-control-button combat-speed-button" id="combat-speed" type="button" aria-label="전투 배속 x1" title="전투 배속">x1</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="story-preview-screen" id="story-preview-screen" aria-label="시나리오" hidden>
+              <div class="story-preview-top">
+                <div class="story-preview-heading-row">
+                <button class="story-preview-back" id="story-preview-back" type="button" aria-label="시나리오 목록으로 돌아가기" title="시나리오 목록으로 돌아가기">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
+                </button>
+                <div class="story-preview-titles">
+                  <h2 id="story-preview-title"></h2>
+                  <p id="story-preview-chapter"></p>
+                </div>
+                <div class="story-preview-actions">
+                  <button class="story-control-button story-icon-button" id="story-auto" type="button" aria-label="자동진행" title="자동진행" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none" /></svg></button>
+                  <button class="story-control-button story-icon-button" id="story-log" type="button" aria-label="기록" title="기록"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H5v18h14V8ZM14 3v5h5M8 12h8m-8 4h8" /></svg></button>
+                </div>
+                </div>
+              </div>
+              <div class="story-dialogue-box" id="story-dialogue-box" role="region" tabindex="0" aria-label="시나리오 텍스트 · 클릭하여 문장 완성 또는 다음 문장">
+                <span class="story-dialogue-speaker" id="story-dialogue-speaker">내레이션</span>
+                <p class="story-dialogue-text" id="story-dialogue-text">낯선 바람이 조용히 스쳐 지나간다. 눈앞에 펼쳐진 풍경 너머로, 아직 알지 못하는 이야기가 기다리고 있었다.</p>
+                <span class="story-dialogue-next" id="story-dialogue-next" aria-hidden="true" hidden>▼</span>
+                <button class="story-dialogue-complete" id="story-dialogue-complete" type="button" hidden>완료</button>
+              </div>
+              <dialog class="story-log-dialog" id="story-log-dialog" aria-labelledby="story-log-heading">
+                <div class="story-log-heading"><h2 id="story-log-heading">기록</h2><button class="story-control-button" id="story-log-close" type="button">닫기</button></div>
+                <div class="story-log-list" id="story-log-list"></div>
+              </dialog>
+            </section>
+            <section class="battle-content" id="battle-content" aria-label="전투 콘텐츠" hidden>
+              <button class="story-entry-card" id="story-entry-card" type="button" aria-label="스토리 챕터 목록">
+                <span class="story-card-content">
+                  <span class="story-card-heading">STORY</span>
+                  <span class="story-card-chapter" id="story-current-chapter">챕터 이름 미정</span>
+                </span>
+              </button>
+              <button class="story-entry-card materials-entry-card" id="materials-entry-card" type="button" aria-label="MATERIALS · 캐릭터 강화에 필요한 재료를 얻어 아군을 성장 시키세요.">
+                <span class="story-card-content">
+                  <span class="story-card-heading">MATERIALS</span>
+                  <span class="story-card-description">캐릭터 강화에 필요한 재료를 얻어 아군을 성장 시키세요.</span>
+                </span>
+              </button>
+            </section>
+            <section class="scenario-screen" id="chapter-screen" aria-labelledby="chapter-list-title" hidden>
+              <div class="scenario-heading">
+                <button class="connection-back" id="chapter-back" type="button" aria-label="스토리 카드로 돌아가기" title="스토리 카드로 돌아가기">◀</button>
+                <div><h2 id="chapter-list-title">챕터 목록</h2><p>각 챕터는 10개 시나리오로 구성돼요.</p></div>
+              </div>
+              <div class="chapter-list" id="chapter-list" aria-label="챕터 목록"></div>
+            </section>
+            <section class="scenario-screen" id="scenario-screen" aria-labelledby="scenario-chapter-title" hidden>
+              <div class="scenario-heading">
+                <button class="connection-back" id="scenario-back" type="button" aria-label="챕터 목록으로 돌아가기" title="챕터 목록으로 돌아가기">◀</button>
+                <div><h2 id="scenario-chapter-title" tabindex="-1">챕터 이름 미정</h2><p>시나리오 목록</p></div>
+              </div>
+              <div class="scenario-list" aria-label="시나리오 목록"></div>
+            </section>
+          </div>
+          <nav class="game-bottom-menu" aria-label="게임 메뉴">
+            <button class="game-bottom-button" id="game-characters" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2" /></svg>
+              <span>캐릭터</span>
+            </button>
+            <button class="game-bottom-button" id="game-party" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
+              <span>편성</span>
+            </button>
+            <button class="game-bottom-button" id="game-battle" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6m-3 3 4 4m-1 1 2-2M14.5 6.5 18 3h3v3l-3.5 3.5M5 14l4 4m-2-1-3 3m-1-1 2 2M6.5 14.5l3-3" /></svg>
+              <span>전투</span>
+            </button>
+            <button class="game-bottom-button" id="game-summon" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" /></svg>
+              <span>소환</span>
+            </button>
+            <button class="game-bottom-button" id="game-inventory" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M5 7h14l2 14H3ZM8 7v4m8-4v4" /></svg>
+              <span>인벤토리</span>
+            </button>
+          </nav>
+        </div>
+        <div class="content-body" id="lorebook" hidden>
+          <div id="lore-list-view">
+          <div class="lore-toolbar">
+            <div class="lore-tabs" role="tablist" aria-label="로어북 종류">
+              <button class="lore-tab" type="button" role="tab" id="lore-world-tab" aria-selected="true" aria-controls="lore-world-panel">배경</button>
+              <button class="lore-tab" type="button" role="tab" id="lore-protagonist-tab" aria-selected="false" aria-controls="lore-protagonist-panel" tabindex="-1">주인공</button>
+              <button class="lore-tab" type="button" role="tab" id="lore-character-tab" aria-selected="false" aria-controls="lore-character-panel" tabindex="-1">등장인물</button>
+            </div>
+            <div class="lore-actions">
+              <button class="add-lore-button" id="add-lore-folder" type="button">+ 폴더 추가</button>
+              <button class="add-lore-button" id="add-lore-entry" type="button">+ 로어북 추가</button>
+            </div>
+          </div>
+          <section class="ai-panel" role="tabpanel" id="lore-world-panel" aria-labelledby="lore-world-tab" tabindex="0"></section>
+          <section class="ai-panel" role="tabpanel" id="lore-protagonist-panel" aria-labelledby="lore-protagonist-tab" tabindex="0" hidden></section>
+          <section class="ai-panel" role="tabpanel" id="lore-character-panel" aria-labelledby="lore-character-tab" tabindex="0" hidden></section>
+          </div>
+          <section id="lore-editor" aria-label="로어북 작성" hidden>
+            <button class="connection-back" id="lore-back" type="button" aria-label="로어북 목록으로 돌아가기" title="로어북 목록으로 돌아가기">◀</button>
+            <form id="lore-entry-form" class="lore-entry-form" autocomplete="off">
+              <div class="world-two-columns">
+                <div class="connection-field"><label for="lore-entry-type">구분</label><select class="connection-input" id="lore-entry-type"><option value="lore-world-tab">배경</option><option value="lore-protagonist-tab">주인공</option><option value="lore-character-tab">등장인물</option></select></div>
+                <div class="connection-field"><label for="lore-entry-folder">폴더</label><select class="connection-input" id="lore-entry-folder"></select></div>
+              </div>
+              <div class="connection-field"><label for="lore-entry-name">로어북 이름</label><input class="connection-input" id="lore-entry-name" maxlength="120" required /></div>
+              <div class="connection-field"><label for="lore-entry-description">로어북 설명</label><textarea class="connection-input" id="lore-entry-description" rows="3" placeholder="목록에서 이름 아래에 표시할 짧은 설명을 적어주세요."></textarea></div>
+              <div class="lore-section-heading"><h2>로어북 섹션</h2><button class="world-secondary" id="add-lore-section" type="button">+ 추가</button></div>
+              <div id="lore-sections" class="lore-sections"></div>
+            </form>
+          </section>
+        </div>
+        <div class="content-body" id="worlds" hidden>
+          <div id="world-list-view"><div class="world-toolbar"><button class="add-world-button" id="add-world" type="button">+ 세계관 추가</button></div></div>
+          <section id="world-editor" aria-label="세계관 추가" hidden>
+            <button class="connection-back" id="world-back" type="button" aria-label="세계관 목록으로 돌아가기" title="세계관 목록으로 돌아가기"><span aria-hidden="true">◀</span></button>
+            <div class="world-steps" role="tablist" aria-label="세계관 설정 단계"><button type="button" class="world-step" role="tab" id="world-step-0" aria-controls="world-panel-0" aria-selected="true" tabindex="0"><span>1</span>세계</button><button type="button" class="world-step" role="tab" id="world-step-1" aria-controls="world-panel-1" aria-selected="false" tabindex="-1"><span>2</span>주인공</button><button type="button" class="world-step" role="tab" id="world-step-2" aria-controls="world-panel-2" aria-selected="false" tabindex="-1"><span>3</span>등장인물</button><button type="button" class="world-step" role="tab" id="world-step-3" aria-controls="world-panel-3" aria-selected="false" tabindex="-1"><span>4</span>배경</button><button type="button" class="world-step" role="tab" id="world-step-4" aria-controls="world-panel-4" aria-selected="false" tabindex="-1"><span>5</span>테마</button><button type="button" class="world-step" role="tab" id="world-step-5" aria-controls="world-panel-5" aria-selected="false" tabindex="-1"><span>6</span>CG</button><button type="button" class="world-step" role="tab" id="world-step-6" aria-controls="world-panel-6" aria-selected="false" tabindex="-1"><span>7</span>고급</button></div>
+            <form id="world-form" autocomplete="off">
+              <section class="world-panel" role="tabpanel" id="world-panel-0" aria-labelledby="world-step-0"><div class="world-panel-heading"><h2>세계</h2><span>1 / 7</span></div><div class="world-fields"><div class="connection-field"><label for="world-name">세계 이름</label><input class="connection-input" id="world-name" type="text" placeholder="예: 별이 잠든 도시" value="" /></div><div class="connection-field"><label for="world-description">구성 세계</label><textarea class="connection-input" id="world-description" rows="4" placeholder="게임의 장르, 분위기, 주요 세력과 세계의 특징을 자유롭게 적어주세요."></textarea></div><div class="connection-field"><label for="world-contact-name">캐릭터의 연락 수단 이름</label><input class="connection-input" id="world-contact-name" type="text" placeholder="예: 메시지, 통신 수정, 꿈의 편지" value="" /></div><div class="connection-field"><label for="world-text-model">텍스트 모델 선택</label><select class="connection-input" id="world-text-model"><option value="">저장된 텍스트 모델을 선택하세요</option></select><p class="connection-field-hint">AI 연결 화면에서 저장한 텍스트 모델을 사용해요.</p></div></div></section>
+              <section class="world-panel" role="tabpanel" id="world-panel-1" aria-labelledby="world-step-1" hidden><div class="world-panel-heading"><h2>주인공</h2><span>2 / 7</span></div><div class="world-fields"><div class="connection-field"><label for="world-player-name">플레이어 이름</label><input class="connection-input" id="world-player-name" type="text" placeholder="예: 지휘관" value="" /></div><p class="connection-field-hint">프로필 카드에만 표시되는 이름이에요. 실제 게임 속 주인공 이름으로 사용하지 않아요.</p><div class="connection-field"><label for="world-protagonist">주인공 로어북 선택</label><select class="connection-input" id="world-protagonist" disabled><option value="">저장된 주인공 로어북이 없어요</option></select><p class="connection-field-hint">로어북의 주인공 탭에 저장한 설정을 선택해요.</p></div></div></section>
+              <section class="world-panel" role="tabpanel" id="world-panel-2" aria-labelledby="world-step-2" hidden><div class="world-panel-heading"><h2>등장인물</h2><span>3 / 7</span></div><div class="world-fields"><div class="world-note"><strong>등장인물은 선택사항이에요.</strong><p>선택한 캐릭터가 있으면 프로필을 참고해 게임에 맞는 등장인물로 생성해요. 선택하지 않으면 세계 설정과 지침을 참고해 AI가 등장인물을 만들어요.</p></div><fieldset class="world-profile-list"><legend>등장인물 로어북 선택 · 여러 명 선택 가능</legend><div id="world-character-lorebooks" class="world-character-lorebooks"></div></fieldset></div></section>
+              <section class="world-panel" role="tabpanel" id="world-panel-3" aria-labelledby="world-step-3" hidden><div class="world-panel-heading"><h2>배경</h2><span>4 / 7</span></div><div class="world-fields"><div class="connection-field"><label for="world-background">배경 로어북 선택</label><select class="connection-input" id="world-background" disabled><option value="">저장된 배경 로어북이 없어요</option></select><p class="connection-field-hint">로어북의 배경 탭에 저장한 설정을 기반으로 게임의 세계를 만들어요.</p></div></div></section>
+              <section class="world-panel" role="tabpanel" id="world-panel-4" aria-labelledby="world-step-4" hidden><div class="world-panel-heading"><h2>테마</h2><span>5 / 7</span></div><div class="world-fields"><fieldset class="world-profile-list"><legend>UI 스타일</legend><label class="world-theme"><input type="radio" name="world-theme" value="dark" checked /><span><strong>기본 테마</strong><small>어두운 배경과 연한 하늘색 버튼</small></span><span class="world-theme-swatches" aria-hidden="true"><i></i><i></i><i></i></span></label></fieldset><p class="connection-field-hint">현재는 기본 테마만 사용할 수 있어요.</p></div></section>
+              <section class="world-panel" role="tabpanel" id="world-panel-5" aria-labelledby="world-step-5" hidden><div class="world-panel-heading"><h2>CG</h2><span>6 / 7</span></div><div class="world-fields"><div class="connection-field"><label for="world-image-model">이미지 생성 모델 선택</label><select class="connection-input" id="world-image-model"><option value="">저장된 이미지 모델을 선택하세요</option></select><p class="connection-field-hint">선택한 연결에 저장된 프롬프트와 생성 옵션을 사용해요.</p></div><fieldset class="world-profile-list"><legend>생성할 이미지</legend><div class="world-check-grid"><label class="world-check"><input type="checkbox" id="world-generate-portraits" checked />캐릭터 초상화</label><label class="world-check"><input type="checkbox" id="world-generate-locations" checked />장소 이미지</label><label class="world-check"><input type="checkbox" id="world-generate-enemies" checked />적 이미지</label><label class="world-check"><input type="checkbox" id="world-generate-battles" checked />전투 배경</label></div><p class="connection-field-hint">선택한 이미지만 생성해요. 해제한 종류는 생성하지 않아요.</p></fieldset><div class="connection-field"><label for="world-cg-frequency">장면 CG 생성 빈도</label><select class="connection-input" id="world-cg-frequency"><option value="0">생성하지 않음</option><option value="1">중요한 장면 1장면마다 최대 1개</option><option value="2">중요한 장면 2장면마다 최대 1개</option><option value="3" selected>중요한 장면 3장면마다 최대 1개</option><option value="5">중요한 장면 5장면마다 최대 1개</option><option value="10">중요한 장면 10장면마다 최대 1개</option></select><p class="connection-field-hint">CG로 그릴 장면은 스토리가 선택해요. 여기서는 생성 빈도만 정해요.</p></div><fieldset class="world-profile-list"><legend>가로 이미지 사이즈</legend><div class="world-two-columns"><div class="connection-field"><label for="world-landscape-width">가로 이미지 너비 (px)</label><input class="connection-input" id="world-landscape-width" type="number" min="64" step="64" value="1216" inputmode="numeric" /></div><div class="connection-field"><label for="world-landscape-height">가로 이미지 높이 (px)</label><input class="connection-input" id="world-landscape-height" type="number" min="64" step="64" value="832" inputmode="numeric" /></div></div><p class="connection-field-hint">장소 배경 · 전투 배경 · 소환 배너 · 장면 CG에 적용해요.</p></fieldset><fieldset class="world-profile-list"><legend>초상화 사이즈</legend><div class="world-two-columns"><div class="connection-field"><label for="world-portrait-width">초상화 너비 (px)</label><input class="connection-input" id="world-portrait-width" type="number" min="64" step="64" value="832" inputmode="numeric" /></div><div class="connection-field"><label for="world-portrait-height">초상화 높이 (px)</label><input class="connection-input" id="world-portrait-height" type="number" min="64" step="64" value="1216" inputmode="numeric" /></div></div><p class="connection-field-hint">캐릭터 카드 · 적 이미지에 적용해요.</p></fieldset></div></section>
+              <section class="world-panel" role="tabpanel" id="world-panel-6" aria-labelledby="world-step-6" hidden><div class="world-panel-heading"><h2>고급</h2><span>7 / 7</span></div><div class="world-fields"><div class="connection-field"><label for="world-story-guidance">전체 스토리 지침</label><textarea class="connection-input" id="world-story-guidance" rows="4" placeholder="이 세계의 이야기 전체에 적용할 규칙을 적어주세요."></textarea></div><div class="connection-field"><label for="world-scene-guidance">장면 지침</label><textarea class="connection-input" id="world-scene-guidance" rows="4" placeholder="장면의 묘사 방식, 분위기, 전개에 대한 지침을 적어주세요."></textarea></div><div class="connection-field"><label for="world-cg-guidance">CG 지침</label><textarea class="connection-input" id="world-cg-guidance" rows="4" placeholder="장면 CG의 구도, 표현, 연출에 대한 지침을 적어주세요."></textarea></div><div class="connection-field"><label for="world-character-guidance">캐릭터 스토리 지침</label><textarea class="connection-input" id="world-character-guidance" rows="4" placeholder="캐릭터의 개인 이야기와 관계를 어떻게 전개할지 적어주세요."></textarea></div></div></section>
+            </form>
+          </section>
+        </div>
+        <div class="content-body" id="ai-connection-body">
+          <div id="connection-list-view">
+          <div class="ai-toolbar">
+          <div class="ai-tabs" role="tablist" aria-label="AI 종류">
+            <button class="ai-tab" type="button" role="tab" id="text-ai-tab" aria-selected="true" aria-controls="text-ai-panel">텍스트 생성 AI</button>
+            <button class="ai-tab" type="button" role="tab" id="image-ai-tab" aria-selected="false" aria-controls="image-ai-panel" tabindex="-1">이미지 생성 AI</button>
+          </div>
+          <button class="add-ai-button" type="button">+ AI 연결 추가</button>
+          </div>
+          <!-- 각 모델의 연결 설정은 해당 패널 안에 추가합니다. -->
+          <section class="ai-panel" role="tabpanel" id="text-ai-panel" aria-labelledby="text-ai-tab" tabindex="0"><p class="save-status" id="connection-list-status" role="status"></p><div class="saved-connections" id="saved-connections"></div></section>
+          <section class="ai-panel" role="tabpanel" id="image-ai-panel" aria-labelledby="image-ai-tab" tabindex="0" hidden><p class="save-status" id="image-connection-list-status" role="status"></p><div class="saved-connections" id="saved-image-connections"></div></section>
+          </div>
+          <div id="connection-editor-view" hidden>
+            <button class="connection-back" id="connection-back" type="button" aria-label="뒤로가기" title="뒤로가기"><span aria-hidden="true">◀</span></button>
+          <form class="connection-form" id="connection-form" aria-label="AI 연결 추가" autocomplete="off">
+            <div class="connection-field">
+              <label for="connection-model-type">연결할 모델</label>
+              <select class="connection-input" id="connection-model-type" name="model-type">
+                <option value="text">텍스트 모델</option>
+                <option value="image">이미지 생성 모델</option>
+              </select>
+            </div>
+            <div class="connection-field">
+              <label id="connection-key-label" for="connection-vertex-key">API KEY</label>
+              <textarea class="connection-input" id="connection-vertex-key" autocomplete="off" spellcheck="false" autocapitalize="none" aria-label="API KEY" placeholder="Google Vertex AI JSON 키 전체를 붙여넣으세요."></textarea>
+              <input class="connection-input" type="password" id="connection-api-key" autocomplete="off" spellcheck="false" autocapitalize="none" aria-label="API KEY" hidden disabled />
+            </div>
+            <div class="text-model-fields" id="text-model-fields">
+              <div class="connection-field">
+                <label for="connection-name">이름</label>
+                <input class="connection-input" type="text" id="connection-name" autocomplete="off" />
+              </div>
+              <div class="connection-field">
+                <label for="connection-region">리전</label>
+                <select class="connection-input" id="connection-region" name="region" aria-describedby="connection-region-hint">
+                  <option value="global" selected>글로벌 (global)</option>
+                  <option value="us-central1">미국 · 아이오와 (us-central1)</option>
+                  <option value="asia-northeast3">한국 · 서울 (asia-northeast3)</option>
+                  <option value="asia-northeast1">일본 · 도쿄 (asia-northeast1)</option>
+                  <option value="europe-west4">유럽 · 네덜란드 (europe-west4)</option>
+                </select>
+                <p class="connection-field-hint" id="connection-region-hint">선택한 모델이 지원하는 리전을 선택하세요.</p>
+              </div>
+              <div class="connection-field">
+                <label for="connection-model">모델</label>
+                <input class="connection-input" type="text" id="connection-model" autocomplete="off" spellcheck="false" autocapitalize="none" />
+              </div>
+              <div class="connection-field">
+                <span class="connection-field-label" id="connection-test-label">연결 테스트</span>
+                <button class="test-connection-button" id="test-connection" type="button" aria-describedby="connection-test-label">테스트 메시지 전송</button>
+                <div class="connection-result" id="connection-test-result" role="status" aria-live="polite" aria-atomic="true" hidden>
+                  <strong id="connection-test-title"></strong>
+                  <p id="connection-test-message"></p>
+                </div>
+              </div>
+            </div>
+            <div class="image-model-fields" id="image-model-fields" hidden>
+              <div class="connection-field">
+                <label for="connection-image-name">이름</label>
+                <input class="connection-input" type="text" id="connection-image-name" autocomplete="off" maxlength="80" disabled />
+              </div>
+              <div class="connection-field">
+                <label for="connection-image-model">모델</label>
+                <select class="connection-input" id="connection-image-model" name="image-model" disabled>
+                  <optgroup label="NovelAI Diffusion V5">
+                    <option value="v5-full" selected>NovelAI Diffusion V5 Full</option>
+                    <option value="v5-curated">NovelAI Diffusion V5 Curated</option>
+                  </optgroup>
+                  <optgroup label="NovelAI Diffusion V4.5">
+                    <option value="v4-5-full">NovelAI Diffusion V4.5 Full</option>
+                    <option value="v4-5-curated">NovelAI Diffusion V4.5 Curated</option>
+                  </optgroup>
+                  <optgroup label="NovelAI Diffusion V4">
+                    <option value="v4-full">NovelAI Diffusion V4 Full</option>
+                    <option value="v4-curated">NovelAI Diffusion V4 Curated</option>
+                  </optgroup>
+                  <optgroup label="NovelAI Diffusion V3">
+                    <option value="anime-v3">NovelAI Diffusion Anime V3</option>
+                    <option value="furry-v3">NovelAI Diffusion Furry V3</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="connection-field">
+                <label for="connection-image-prefix">프롬프트 접두사</label>
+                <textarea class="connection-input image-prompt-input" id="connection-image-prefix" rows="3" spellcheck="false" disabled></textarea>
+              </div>
+              <div class="connection-field">
+                <label for="connection-image-suffix">프롬프트 접미사</label>
+                <textarea class="connection-input image-prompt-input" id="connection-image-suffix" rows="3" spellcheck="false" disabled></textarea>
+              </div>
+              <div class="connection-field">
+                <label for="connection-image-negative-prefix">네거티브 접두사</label>
+                <textarea class="connection-input image-prompt-input" id="connection-image-negative-prefix" rows="3" spellcheck="false" disabled></textarea>
+              </div>
+              <div class="connection-field">
+                <label id="image-steps-label" for="image-steps-number">단계</label>
+                <div class="image-slider-row" data-slider-pair>
+                  <input class="image-slider" type="range" id="image-steps-range" min="1" max="50" step="1" value="28" aria-labelledby="image-steps-label" disabled />
+                  <input class="connection-input image-slider-number" type="number" id="image-steps-number" min="1" max="50" step="1" value="28" aria-labelledby="image-steps-label" inputmode="numeric" disabled />
+                </div>
+              </div>
+              <div class="connection-field">
+                <label id="image-guidance-label" for="image-guidance-number">프롬프트 가이던스</label>
+                <div class="image-slider-row" data-slider-pair>
+                  <input class="image-slider" type="range" id="image-guidance-range" min="0" max="10" step="0.1" value="5" aria-labelledby="image-guidance-label" disabled />
+                  <input class="connection-input image-slider-number" type="number" id="image-guidance-number" min="0" max="10" step="0.1" value="5" aria-labelledby="image-guidance-label" inputmode="decimal" disabled />
+                </div>
+              </div>
+              <div class="connection-field">
+                <label id="image-rescale-label" for="image-rescale-number">가이던스 리스케일</label>
+                <div class="image-slider-row" data-slider-pair>
+                  <input class="image-slider" type="range" id="image-rescale-range" min="0" max="1" step="0.01" value="0" aria-labelledby="image-rescale-label" disabled />
+                  <input class="connection-input image-slider-number" type="number" id="image-rescale-number" min="0" max="1" step="0.01" value="0" aria-labelledby="image-rescale-label" inputmode="decimal" disabled />
+                </div>
+              </div>
+              <div class="connection-field">
+                <label for="image-uc-preset">UC 프리셋</label>
+                <select class="connection-input" id="image-uc-preset" disabled>
+                  <option value="none" selected>None</option>
+                  <option value="human-focus">Human Focus</option>
+                  <option value="furry-focus">Furry Focus</option>
+                  <option value="light">Light</option>
+                  <option value="heavy">Heavy</option>
+                </select>
+              </div>
+              <div class="connection-field">
+                <label for="image-quality-tags">퀄리티 태그</label>
+                <select class="connection-input" id="image-quality-tags" disabled>
+                  <option value="none">None</option>
+                  <option value="light">Light</option>
+                  <option value="standard" selected>Standard</option>
+                </select>
+              </div>
+              <div class="connection-field">
+                <span class="connection-field-label" id="image-test-label">연결 테스트</span>
+                <button class="test-connection-button" id="test-image-connection" type="button" aria-describedby="image-test-label image-test-hint" disabled>이미지 테스트</button>
+                <p class="connection-field-hint" id="image-test-hint">1024 × 1024 이미지 1장을 생성합니다. 설정과 구독에 따라 Anlas가 사용될 수 있어요.</p>
+                <div class="connection-result image-test-result" id="image-test-status" role="status" aria-live="polite" aria-atomic="true" hidden>
+                  <strong id="image-test-title"></strong><p id="image-test-message"></p>
+                </div>
+                <button class="image-thumbnail" id="image-test-thumbnail" type="button" aria-label="생성된 테스트 이미지 원본 크기로 보기" hidden>
+                  <img id="image-test-image" alt="NovelAI로 생성한 스파게티 테스트 이미지" width="1024" height="1024" />
+                </button>
+              </div>
+            </div>
+          </form>
+          </div>
+        </div>
+        <footer class="editor-footer" id="connection-editor-footer" hidden>
+          <p class="save-status" id="connection-save-status" role="status" aria-live="polite"></p>
+          <button class="save-connection-button" id="save-connection" type="button">저장</button>
+        </footer>
+<footer class="editor-footer world-footer" id="world-footer" hidden>
+          <p class="save-status" id="world-status" role="status" aria-live="polite">화면 미리보기 · 실제 생성은 아직 진행하지 않아요.</p>
+          <div class="world-footer-actions"><button class="world-secondary" id="world-previous" type="button" disabled>이전</button><button class="save-connection-button" id="world-next" type="button">다음</button></div>
+        </footer>
+        <footer class="editor-footer" id="lore-editor-footer" hidden>
+          <p class="save-status" id="lore-save-status" role="status" aria-live="polite"></p>
+          <button class="save-connection-button" type="submit" form="lore-entry-form">저장</button>
+        </footer>
+        <div class="folder-menu" id="folder-menu" role="menu" aria-label="폴더 관리" hidden>
+          <button type="button" role="menuitem" data-action="rename">이름 변경</button>
+          <button type="button" role="menuitem" data-action="delete">삭제</button>
+        </div>
+        <dialog class="folder-dialog" id="folder-delete-dialog" aria-labelledby="folder-delete-title" aria-describedby="folder-delete-message">
+          <h2 id="folder-delete-title">폴더 삭제</h2>
+          <p class="folder-delete-message" id="folder-delete-message"></p>
+          <p class="save-status" id="folder-delete-error" role="alert"></p>
+          <div class="folder-dialog-actions">
+            <button class="world-secondary" id="folder-delete-cancel" type="button" autofocus>취소</button>
+            <button class="save-connection-button folder-delete-button" id="folder-delete-confirm" type="button">삭제</button>
+          </div>
+        </dialog>
+        <dialog class="folder-dialog" id="folder-dialog" aria-labelledby="folder-dialog-title">
+          <form id="folder-form">
+            <h2 id="folder-dialog-title">폴더 추가</h2>
+            <div class="connection-field">
+              <label for="folder-name">폴더 이름</label>
+              <input class="connection-input" id="folder-name" type="text" maxlength="80" required autocomplete="off" autofocus />
+            </div>
+            <p class="save-status" id="folder-error" role="alert"></p>
+            <div class="folder-dialog-actions">
+              <button class="world-secondary" id="folder-cancel" type="button">취소</button>
+              <button class="save-connection-button" type="submit">확인</button>
+            </div>
+          </form>
+        </dialog>
+      </main>
+    </div>
+    <dialog class="image-preview" id="image-preview-dialog" aria-labelledby="image-preview-heading">
+      <div class="image-preview-bar">
+        <h2 id="image-preview-heading">테스트 이미지 · 1024 × 1024 원본 크기</h2>
+        <button class="image-preview-close" id="image-preview-close" type="button">닫기</button>
+      </div>
+      <div class="image-preview-scroll" id="image-preview-scroll"><img id="image-preview-original" alt="테스트 이미지 원본" width="1024" height="1024" /></div>
+    </dialog>
+    <script type="module" src="src/game-ui.js"></script></body></html>

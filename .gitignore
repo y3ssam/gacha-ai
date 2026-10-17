@@ -6,3 +6,8 @@ node_modules/
 *.key
 saves/
 test-results/
+
+*.dpapi
+connections-*.tmp
+*.pem
+*.key

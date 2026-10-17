@@ -1,0 +1,611 @@
+{
+  "source": "https://github.com/y3ssam/gacha-game",
+  "commit": "6ae30d1c1f44edd5b9ad85f5dcb1f21d88d3d716",
+  "files": [
+    {
+      "path": "assets/dungeons/battle-entry-prompts.json",
+      "bytes": 2329,
+      "sha256": "74acba78cfa0c20f03acf4b4dc74e9fabfdcb5a08f5651ab734e3571b61653da"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-dark.png",
+      "bytes": 2799734,
+      "sha256": "66bd3a9d6934b554be40c377fd70ad6011de49dd3f89402d26669c253d732b0c"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-earth.png",
+      "bytes": 2645035,
+      "sha256": "dcfd3bd57176854a186f83f46e806267d19c2a13ea7547cf80550c0b2f3555e5"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-fire.png",
+      "bytes": 2660666,
+      "sha256": "afdcef3b343c5e5e72eac22f040ce0ec793181c77857475ac32b884e2a216f22"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-ice.png",
+      "bytes": 2724763,
+      "sha256": "1dcd3809d0f28e72307db4e01625bc4deeb9a5f7a7265d692d8a96c68eb5c8bc"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-light.png",
+      "bytes": 2532418,
+      "sha256": "6668bcbf5b0e695afce27deda81a438865915dca24995b91772eb69444caef9c"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-lightning.png",
+      "bytes": 2714848,
+      "sha256": "2696c99bdf27ecdcf1625644227c759b5b8f57021ffcb08dbeef87708d065665"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-nature.png",
+      "bytes": 3287462,
+      "sha256": "9e455a83691f0761fe24afb56ff0ad9d955ccb825465586854f9328c312648f4"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-water.png",
+      "bytes": 2874370,
+      "sha256": "2ba9964d8bd126cd99285459d8864a813c0276ab59d3333e522bf2c0f1462751"
+    },
+    {
+      "path": "assets/dungeons/breakthrough-wind.png",
+      "bytes": 2650357,
+      "sha256": "51192cd3d1e625408d4c8ad7e03327a1d58ca3981532bbfede161ff05420d4bb"
+    },
+    {
+      "path": "assets/dungeons/breakthrough.png",
+      "bytes": 2481052,
+      "sha256": "ad525dbb245e43557cd2390c9f96605225c184c26812cf31bfeed635c129f548"
+    },
+    {
+      "path": "assets/dungeons/equipment.png",
+      "bytes": 2160600,
+      "sha256": "aefd21f28fc2f309447ec0e5aeb6c3432c4e4828348cb335c80c7ab62afaec36"
+    },
+    {
+      "path": "assets/dungeons/generation-prompts-elemental.json",
+      "bytes": 29748,
+      "sha256": "ff85b292c4648374c5e4fd836439cdd944a781b2193d09cb9aff6988174e4e5c"
+    },
+    {
+      "path": "assets/dungeons/generation-prompts.json",
+      "bytes": 6770,
+      "sha256": "d861b53868ad1c98b4633dbe2cb2ee02679e9ca7348e236d7f533f3457180deb"
+    },
+    {
+      "path": "assets/dungeons/gold.png",
+      "bytes": 2496374,
+      "sha256": "c11ea77b73fec89708aa8e24ea215a2adb685a2402bb53163e88f9d6a819076a"
+    },
+    {
+      "path": "assets/dungeons/growth.png",
+      "bytes": 2522754,
+      "sha256": "3aae526d8d56bccf8908f561b60985dcf12dc4254503cbba41ea0e1e963514ae"
+    },
+    {
+      "path": "assets/dungeons/manifest.json",
+      "bytes": 3659,
+      "sha256": "21d01cf1c30dba264e73659a8a0dd84a5e783121c58767495a3510db71588cfc"
+    },
+    {
+      "path": "assets/dungeons/materials-entry.png",
+      "bytes": 2475779,
+      "sha256": "64a23e74512646e1c71c18729f62b29ad97e4def92e8a5770099e0bcca4ee014"
+    },
+    {
+      "path": "assets/dungeons/README.md",
+      "bytes": 1595,
+      "sha256": "32fcc65c8ee6d60fcfbcfd3f14161ae812c8f0c2c3e07a67660e122847cec54e"
+    },
+    {
+      "path": "assets/dungeons/skill-dark.png",
+      "bytes": 2701650,
+      "sha256": "101b4e7918c1eb243346367df704c035271d9f942d4e05a23353b0811abcb8a0"
+    },
+    {
+      "path": "assets/dungeons/skill-earth.png",
+      "bytes": 2506641,
+      "sha256": "2c1bfbea9db6ad3a973daa29deec4ed3450a632ce5ee284e98578ac4566422f4"
+    },
+    {
+      "path": "assets/dungeons/skill-fire.png",
+      "bytes": 2491132,
+      "sha256": "2df04bb148a0cc04424c63b8bd49cec09df27e8825f0ec39cb6939d01c875b3c"
+    },
+    {
+      "path": "assets/dungeons/skill-ice.png",
+      "bytes": 2746752,
+      "sha256": "a17a1687e630d07eae9e947d24e5ecf2ff7d0b4a0f05caefd5ef4a04f557acb2"
+    },
+    {
+      "path": "assets/dungeons/skill-light.png",
+      "bytes": 2427473,
+      "sha256": "2f9bc578493e98a6186a123e7425b48df5844388c29b27dbda922e09cc714ee3"
+    },
+    {
+      "path": "assets/dungeons/skill-lightning.png",
+      "bytes": 2644927,
+      "sha256": "dbef17fb4baa4f75420b37cf8b4a41c169da765643455858a685c8b745690167"
+    },
+    {
+      "path": "assets/dungeons/skill-nature.png",
+      "bytes": 3338250,
+      "sha256": "214fe34e80c54ac9ecefea79f5a0f3a9d29c14a762b21c9f3e0b01326caba2c2"
+    },
+    {
+      "path": "assets/dungeons/skill-water.png",
+      "bytes": 2765845,
+      "sha256": "de630d3a20997d17f216233d41784c4b26942e57061c93ec0fa80bb7bea98583"
+    },
+    {
+      "path": "assets/dungeons/skill-wind.png",
+      "bytes": 2603208,
+      "sha256": "cdb112c6912342b34e7e6e7207ee826a9fa3a96dfd0b171859cc70a5ba6738ec"
+    },
+    {
+      "path": "assets/dungeons/skill.png",
+      "bytes": 2402957,
+      "sha256": "53623ec619a8537191c9846031b978a9a2ae2e971b018887125834ca58983e25"
+    },
+    {
+      "path": "assets/dungeons/story-entry.png",
+      "bytes": 2860815,
+      "sha256": "75151e9614018521cb6adfc20527c5f8c97d70a14e6a80cfda3f982a8fab567f"
+    },
+    {
+      "path": "assets/equipment/ancient-legacy-armor.png",
+      "bytes": 1385959,
+      "sha256": "60876a8512691f128379a11952ed458d0b0b28e5b24401541171d2b941403c06"
+    },
+    {
+      "path": "assets/equipment/ancient-legacy-gloves.png",
+      "bytes": 1316158,
+      "sha256": "a82eae1a549e66b64edac0c07f197b6b67a16a894b49bec33d5bc5bc838d3201"
+    },
+    {
+      "path": "assets/equipment/ancient-legacy-necklace.png",
+      "bytes": 688601,
+      "sha256": "d4253f728e3baa9dccae8065862e68a31154aa07a2302bbe275e9e6fec591c79"
+    },
+    {
+      "path": "assets/equipment/ancient-legacy-ring.png",
+      "bytes": 945600,
+      "sha256": "69642b0421d88c03b381fc049d0adfd4b22433ba1ae3a093c730518733d4278a"
+    },
+    {
+      "path": "assets/equipment/ancient-legacy-shoes.png",
+      "bytes": 1350795,
+      "sha256": "ae16ce312c7d25f6f79cdfb18cf72bb94608eddd8b401d79a9e0e008bba5053e"
+    },
+    {
+      "path": "assets/equipment/ancient-legacy-weapon.png",
+      "bytes": 968273,
+      "sha256": "1e7eb90a181fa2a212195e219b103b9b3bba3983d338f610515459600fba4ec0"
+    },
+    {
+      "path": "assets/equipment/dawn-blade-armor.png",
+      "bytes": 1560614,
+      "sha256": "973fbf984ca77b3f514d54f2e765f7454da51a6e10b0591e35504b35437235c6"
+    },
+    {
+      "path": "assets/equipment/dawn-blade-gloves.png",
+      "bytes": 1380035,
+      "sha256": "d9fbf499715e037603733ae2b75d06add9432df7fe5f6d8c62c9d65146eab9a4"
+    },
+    {
+      "path": "assets/equipment/dawn-blade-necklace.png",
+      "bytes": 655820,
+      "sha256": "16344ec17b281b3ecdeea020c9421f25e30ef45df50281f75e64e60e33f84e40"
+    },
+    {
+      "path": "assets/equipment/dawn-blade-ring.png",
+      "bytes": 842340,
+      "sha256": "a9aa424abe3824e7d274042fcc276529d3fafbb94564a61c9fea7145f2c1260a"
+    },
+    {
+      "path": "assets/equipment/dawn-blade-shoes.png",
+      "bytes": 1347064,
+      "sha256": "31a83023c05861534aba36570191ca20000e0441bf4ef4847954a71e8a6859ff"
+    },
+    {
+      "path": "assets/equipment/dawn-blade-weapon.png",
+      "bytes": 853190,
+      "sha256": "0436b64ece7b0d7b09ff8ae5e8bab4d9be4b880a08094bd35a6ade030ef0aabc"
+    },
+    {
+      "path": "assets/equipment/daybreak-prayer-armor.png",
+      "bytes": 1470768,
+      "sha256": "4927755de3bf7848bbb0c990a40da11b6539ca5f3fa5d2490ae7d9117e939008"
+    },
+    {
+      "path": "assets/equipment/daybreak-prayer-gloves.png",
+      "bytes": 1337069,
+      "sha256": "ddb84c92ac38dfbe87735dcabfce051506b876bed235b87025c262a51f1f7906"
+    },
+    {
+      "path": "assets/equipment/daybreak-prayer-necklace.png",
+      "bytes": 790161,
+      "sha256": "c2ea1df89a767ba94e2829f11ab09829448e845919347fc89ad84ccaccf3648a"
+    },
+    {
+      "path": "assets/equipment/daybreak-prayer-ring.png",
+      "bytes": 1008770,
+      "sha256": "aa1a3bfd37b53c0a09494f8802c1a5164e8f8a22e07521ec9f6083d66744aa4b"
+    },
+    {
+      "path": "assets/equipment/daybreak-prayer-shoes.png",
+      "bytes": 1324691,
+      "sha256": "bd1d7e0f837302abfa4d886d909ddcfb512e7ba87d997585e872b719b4011e7a"
+    },
+    {
+      "path": "assets/equipment/daybreak-prayer-weapon.png",
+      "bytes": 1164281,
+      "sha256": "c0641cd14525a92b4fb90fba80a4a50a4a1169493b0698681a8f810435e675c9"
+    },
+    {
+      "path": "assets/equipment/generation-prompts.json",
+      "bytes": 106639,
+      "sha256": "9f139f4a00c99b89594044c91634f9ee345b7ffd1d02fb449609680417b8fdad"
+    },
+    {
+      "path": "assets/equipment/index.html",
+      "bytes": 9144,
+      "sha256": "ff3df0a350c53e00faca527ca9ebc88bb3e3850a08787459ead28b4a8bd1316a"
+    },
+    {
+      "path": "assets/equipment/manifest.json",
+      "bytes": 24217,
+      "sha256": "87475d43b7b45381a6e65e9be3792c2b18ce5fd40aafda632a7388ab2dff136e"
+    },
+    {
+      "path": "assets/equipment/pathfinder-armor.png",
+      "bytes": 1441374,
+      "sha256": "d568c748a8a6b274011e141de1037f9f3d5bec3e7b721f943a2d598ade58df1e"
+    },
+    {
+      "path": "assets/equipment/pathfinder-gloves.png",
+      "bytes": 1127629,
+      "sha256": "de6fd84e157b18b6bbbd146b4fa576b16a6b049848eef4110104298e06f676bf"
+    },
+    {
+      "path": "assets/equipment/pathfinder-necklace.png",
+      "bytes": 558163,
+      "sha256": "ef0b2339d66aaa7c0738cce72430f7e3c005301a8d9b9906999d812ebef00fb9"
+    },
+    {
+      "path": "assets/equipment/pathfinder-ring.png",
+      "bytes": 704934,
+      "sha256": "1845b42575a53bcd55840ebd89ac35052284723838ccef2cd77c14f72981edf3"
+    },
+    {
+      "path": "assets/equipment/pathfinder-shoes.png",
+      "bytes": 1301034,
+      "sha256": "4f08005fbc556462a98604222b0a26c83a2f18b95cf8171152ba701fae26cc59"
+    },
+    {
+      "path": "assets/equipment/pathfinder-weapon.png",
+      "bytes": 670896,
+      "sha256": "2454a2b0b10c6fa789ea119d33cdc77aa3d703129e6f01a41025082f50a6394b"
+    },
+    {
+      "path": "assets/equipment/README.md",
+      "bytes": 2092,
+      "sha256": "ade86174cc425d054c9965028633a531dd4ac5e43a6c1b9790ba9f902157b310"
+    },
+    {
+      "path": "assets/equipment/shadow-fang-armor.png",
+      "bytes": 1253983,
+      "sha256": "d075661da9df7b497f20b77805d48de7bccc18a2d06f84ab930db39d9f984efe"
+    },
+    {
+      "path": "assets/equipment/shadow-fang-gloves.png",
+      "bytes": 1169042,
+      "sha256": "77c53c5d3687198b51e50dfa3c0c5e365216fc9524850bb0c1d6387820a84b69"
+    },
+    {
+      "path": "assets/equipment/shadow-fang-necklace.png",
+      "bytes": 686583,
+      "sha256": "72846d69f9168660dc435cdbe383d2545136641f9ab4b9b7cd4ba2dd37760380"
+    },
+    {
+      "path": "assets/equipment/shadow-fang-ring.png",
+      "bytes": 995307,
+      "sha256": "6b33265476262d62a0b9ec47e2c1d53f89fa20ce5594c3dfd1141599b6fdbbfa"
+    },
+    {
+      "path": "assets/equipment/shadow-fang-shoes.png",
+      "bytes": 1176283,
+      "sha256": "5854e4293a9a6e0a4ba973521a133c470aa452691d26ac30f656ff4c51e3ee39"
+    },
+    {
+      "path": "assets/equipment/shadow-fang-weapon.png",
+      "bytes": 994877,
+      "sha256": "d6016f3e4f2b8ff4889cb5a22c3733674959490ee0d0bf9e57318f31094c18c9"
+    },
+    {
+      "path": "assets/equipment/silver-oath-armor.png",
+      "bytes": 1597057,
+      "sha256": "416c0c67927cb0d455dcd85059cadae2857524df41cf9bd78a1a60fe020029e4"
+    },
+    {
+      "path": "assets/equipment/silver-oath-gloves.png",
+      "bytes": 1448214,
+      "sha256": "ad1c0ad47c0a8a13e9ed8eaed2cae6523cfbb31e54c251811968a0fcb3387221"
+    },
+    {
+      "path": "assets/equipment/silver-oath-necklace.png",
+      "bytes": 759192,
+      "sha256": "08962fcbb7932d3193d803cb2857ea7ee5f66173c0de95b6579872ea10801a77"
+    },
+    {
+      "path": "assets/equipment/silver-oath-ring.png",
+      "bytes": 903547,
+      "sha256": "64d6d3817bf9dfdc26504e70e81e02b96cfdd8fbf154b86f042974964f51b329"
+    },
+    {
+      "path": "assets/equipment/silver-oath-shoes.png",
+      "bytes": 1185605,
+      "sha256": "bb4f039940519004a0ef21afd3abc99907c1042159099195b710e3d3498c8f01"
+    },
+    {
+      "path": "assets/equipment/silver-oath-weapon.png",
+      "bytes": 517967,
+      "sha256": "b64e436e434d8604b6a9a926d0bf5b5c220e96a72db604719813706bc507c747"
+    },
+    {
+      "path": "assets/equipment/star-record-armor.png",
+      "bytes": 1366958,
+      "sha256": "a28ac476ed0ae4c45633130fae09d22f3354ed7061652b3538c712fd37f101a6"
+    },
+    {
+      "path": "assets/equipment/star-record-gloves.png",
+      "bytes": 1189024,
+      "sha256": "05dd35020d5e7fc813c7b740d8d39ce61b00ade6e760fafd5783ffda1790a123"
+    },
+    {
+      "path": "assets/equipment/star-record-necklace.png",
+      "bytes": 657588,
+      "sha256": "38308cf3cbaecfeaebdd5d0d7c2bada857f6db9049e2f32180a24f2d5d6af356"
+    },
+    {
+      "path": "assets/equipment/star-record-ring.png",
+      "bytes": 882805,
+      "sha256": "782184bc5ba07527acdbbd15ab1d000817b2abb364fdc292772971fcdda4934d"
+    },
+    {
+      "path": "assets/equipment/star-record-shoes.png",
+      "bytes": 1285097,
+      "sha256": "e416d172c576f9c4f0b0faf2ce3b73b430f6c4a129f13fbd21d09de05ad09458"
+    },
+    {
+      "path": "assets/equipment/star-record-weapon.png",
+      "bytes": 723181,
+      "sha256": "90bb47f09aafed7c4e83111b50f0c994e2ffe7c66eda165b07cf7c698eed3f43"
+    },
+    {
+      "path": "assets/equipment/trackers-eye-armor.png",
+      "bytes": 1138034,
+      "sha256": "b1f9fbc64f421f41dda2eb0901f432807dde6415f1529c2be160f612da551ab3"
+    },
+    {
+      "path": "assets/equipment/trackers-eye-gloves.png",
+      "bytes": 1322018,
+      "sha256": "8576516cbe0c0063cdf6636fcfcbf8564b1095f419592836a3fbb43bc8caba5b"
+    },
+    {
+      "path": "assets/equipment/trackers-eye-necklace.png",
+      "bytes": 674971,
+      "sha256": "2e55eace8f1ec636172e1535e460b2825be6c66259e900bd6385b9005f6626c6"
+    },
+    {
+      "path": "assets/equipment/trackers-eye-ring.png",
+      "bytes": 811156,
+      "sha256": "dd025d7dd8f2e8de4e81825634ea2946996b1cf219cf79ec3a58c78a617b1711"
+    },
+    {
+      "path": "assets/equipment/trackers-eye-shoes.png",
+      "bytes": 1276687,
+      "sha256": "527ecc5963fc39aceb8b7e9e5df61d4bb8008ffb112079132d4e454349ac4785"
+    },
+    {
+      "path": "assets/equipment/trackers-eye-weapon.png",
+      "bytes": 690849,
+      "sha256": "501f6fd8acf95df1797ca09277fbc46edb4c66b2897e43245a63d4008150aff8"
+    },
+    {
+      "path": "assets/equipment/unyielding-armor.png",
+      "bytes": 1528583,
+      "sha256": "f3af394d1e03e19183eb41fe6bb6f5a4f39dbdb4e3a6588e2a226edf9a813343"
+    },
+    {
+      "path": "assets/equipment/unyielding-gloves.png",
+      "bytes": 1434275,
+      "sha256": "85436dda9be2139752f2a4987de6ecb69e371b46933b2667402b46ce0f3402d3"
+    },
+    {
+      "path": "assets/equipment/unyielding-necklace.png",
+      "bytes": 742563,
+      "sha256": "e9a033cbd77b6810179a36297e71d8daff4704b9eb31fe091ea4ec24562286ea"
+    },
+    {
+      "path": "assets/equipment/unyielding-ring.png",
+      "bytes": 1117891,
+      "sha256": "d3af8ad30fa48e9282630da0d271cd2f436fc911559782a456156b011f23f820"
+    },
+    {
+      "path": "assets/equipment/unyielding-shoes.png",
+      "bytes": 1468344,
+      "sha256": "96395ad5284ba9db11f6bcc0dc8268d833270096486f8209c9df4434f6620cd9"
+    },
+    {
+      "path": "assets/equipment/unyielding-weapon.png",
+      "bytes": 1029697,
+      "sha256": "01be80ad1d9b19fc8fc253764fbb3f31c7843e016f950460b01907f8752319d6"
+    },
+    {
+      "path": "assets/equipment/victory-plan-armor.png",
+      "bytes": 1554433,
+      "sha256": "96e85447632985bda4d52152cbe6a60fc8bf1459d4068d7345e1eaa6a9e77934"
+    },
+    {
+      "path": "assets/equipment/victory-plan-gloves.png",
+      "bytes": 1402645,
+      "sha256": "49166918c13bc1a8c2ce761008f61bce34772863ed7116a45cac407bec71750c"
+    },
+    {
+      "path": "assets/equipment/victory-plan-necklace.png",
+      "bytes": 853281,
+      "sha256": "b5c3fb1bfea75439ce70f7145c1564c469884ed2e0d30cdf23054a93cf525853"
+    },
+    {
+      "path": "assets/equipment/victory-plan-ring.png",
+      "bytes": 1151698,
+      "sha256": "8d8d23e3048965d020b2c0ea52ccba171c8251f653fd360f23d244e2f452a207"
+    },
+    {
+      "path": "assets/equipment/victory-plan-shoes.png",
+      "bytes": 1318182,
+      "sha256": "9c4da2f93e3b53b4461f48b7566e50ba449459b431afd97d9686918d45d3d903"
+    },
+    {
+      "path": "assets/equipment/victory-plan-weapon.png",
+      "bytes": 1595410,
+      "sha256": "515d35e6fac2106bc6d694fbf196caf54623e323593c3def21d1b27ec8e43d41"
+    },
+    {
+      "path": "assets/materials/catalyst-common.png",
+      "bytes": 1256641,
+      "sha256": "63569553ce02c0de5f7f2a643b3abedb499547f1b448ef79c739a62ce314ac45"
+    },
+    {
+      "path": "assets/materials/catalyst-dark.png",
+      "bytes": 1236428,
+      "sha256": "8e18390c3032564530a9889d0e7f9435de9b6c4da8f51517936c00927817f4f6"
+    },
+    {
+      "path": "assets/materials/catalyst-earth.png",
+      "bytes": 1311055,
+      "sha256": "40693fa08cb00eb9e872560377b62ad01e0bd31c8423b90d9591cd017233ecd5"
+    },
+    {
+      "path": "assets/materials/catalyst-fire.png",
+      "bytes": 1255271,
+      "sha256": "fb0987ee26ce275ca14078f4382edc99b6098f3fe44c7739ed76a28a575a1656"
+    },
+    {
+      "path": "assets/materials/catalyst-ice.png",
+      "bytes": 1244452,
+      "sha256": "4c32e83cdb7e6e40db6ed09a9e79c469f98fe19f3f96dba0d61741ee4702ee54"
+    },
+    {
+      "path": "assets/materials/catalyst-light.png",
+      "bytes": 1237665,
+      "sha256": "912c5aace6f2fcce412c1d63bf1e7561d1d2a8adf5e5c3d49e991a43fa293178"
+    },
+    {
+      "path": "assets/materials/catalyst-lightning.png",
+      "bytes": 1245081,
+      "sha256": "bb2cca62c0a3b75af6675b3478ba8c454f041f047da878884504d91468940ffb"
+    },
+    {
+      "path": "assets/materials/catalyst-nature.png",
+      "bytes": 1248747,
+      "sha256": "a36b3ea513feb744d8cf90c04276df96439c957183a73d87f6fcd9dd27d65069"
+    },
+    {
+      "path": "assets/materials/catalyst-water.png",
+      "bytes": 1238751,
+      "sha256": "3695900135963f69f1ccc5d04a877b6a06e5626a0a688d9a47153323ff3c14e3"
+    },
+    {
+      "path": "assets/materials/catalyst-wind.png",
+      "bytes": 1252098,
+      "sha256": "9f236bc929e5a51041881d3c9e4db7438242519a3e836c4fdf09a2367ae16545"
+    },
+    {
+      "path": "assets/materials/generation-prompts.json",
+      "bytes": 38533,
+      "sha256": "92ef1f974db7850bbc0a3ab3f1ac2fdcb11bc7da5ce4b72f064edc49c429aac7"
+    },
+    {
+      "path": "assets/materials/growth-crystal.png",
+      "bytes": 1088176,
+      "sha256": "a6ac5d37bc81690f1fbbe8075a88837180c5f09c170123af18e8ab9c2450ef5c"
+    },
+    {
+      "path": "assets/materials/growth-essence.png",
+      "bytes": 1104218,
+      "sha256": "c72f2b445e1cf1d06e9d677157ee841e8fb66d80e0daccf6d7ea9f8e9f54bf90"
+    },
+    {
+      "path": "assets/materials/growth-shard.png",
+      "bytes": 601344,
+      "sha256": "c88eacaced0264a4fcd36fa4a5ccd04eeeaf7e48b3a3cc44f9b3f1de59941979"
+    },
+    {
+      "path": "assets/materials/index.html",
+      "bytes": 10940,
+      "sha256": "5b46f2875f5e1a598e758e210fd1f79fc12194ac982b7b6731bc1e031f9d9b51"
+    },
+    {
+      "path": "assets/materials/inscription-common.png",
+      "bytes": 1383196,
+      "sha256": "26a90a6ba3f863a35fd6766bde3a23d25b2781afa19eda32cec08be7cfe4c02c"
+    },
+    {
+      "path": "assets/materials/inscription-dark.png",
+      "bytes": 1309511,
+      "sha256": "0926ee3234f65fd92579814dd3dc292c0657022f6c4802d6ccc3508b3774ef57"
+    },
+    {
+      "path": "assets/materials/inscription-earth.png",
+      "bytes": 1318021,
+      "sha256": "493c587baf8437401da56733889e6a12cf2fe736fb32db940a173923296db823"
+    },
+    {
+      "path": "assets/materials/inscription-fire.png",
+      "bytes": 1414160,
+      "sha256": "2551fdcca2f20e5fa9eccbfec1bf4681f34f2e1a2d91ab4208a9690e22b88753"
+    },
+    {
+      "path": "assets/materials/inscription-ice.png",
+      "bytes": 1340496,
+      "sha256": "5ff009e769405abb63ae169f1a30364e36a88150805389d4c261c03ad94fa596"
+    },
+    {
+      "path": "assets/materials/inscription-light.png",
+      "bytes": 1330988,
+      "sha256": "c129fa31ee372da5b850606a4d8212dbe08ed402942d97a956f7515cbf5c26be"
+    },
+    {
+      "path": "assets/materials/inscription-lightning.png",
+      "bytes": 1289927,
+      "sha256": "7f398327d81c07d9441d9f41921db4c0a87df2531f2464c4e6c638aec5310f3a"
+    },
+    {
+      "path": "assets/materials/inscription-nature.png",
+      "bytes": 1294938,
+      "sha256": "54e5437a2e71c889e69f4f38078a9a4c7780eeb8b54fba46351f071aba30cb9e"
+    },
+    {
+      "path": "assets/materials/inscription-water.png",
+      "bytes": 1301480,
+      "sha256": "a62fc15a21b23bf5b9faed707d5b054f938757bdcadfb8e7cbfd38aae12d5daf"
+    },
+    {
+      "path": "assets/materials/inscription-wind.png",
+      "bytes": 1317324,
+      "sha256": "93c26e339e38e783745ed62868d51c2bce6e52a9864b4a24d3f3c6f4a9f0d018"
+    },
+    {
+      "path": "assets/materials/manifest.json",
+      "bytes": 3513,
+      "sha256": "1d263e7706dd6fafaa4a0297371256a141c9267a6531f79009781492a9d0d0a0"
+    },
+    {
+      "path": "assets/materials/README.md",
+      "bytes": 953,
+      "sha256": "fe2cd1d3649b82fe2a4700e1aeb6b0d53110b37dabeeb97d1e7f736ecfd6c35e"
+    }
+  ]
+}

@@ -20,3 +20,9 @@ export const DIRECTIVES={overall:'',world:'',gacha:'',scene:'',chapters:'',cg:''
 export const EQUIPMENT={weapon:{name:'궤도검',icon:'sword',stat:'atk',base:18},armor:{name:'관측자 외투',icon:'armor',stat:'def',base:12},charm:{name:'공명 나침반',icon:'compass',stat:'hp',base:90}};
 export const CHAPTERS=Array.from({length:12},(_,i)=>({id:i+1,title:['끊어진 신호','구름 아래의 도시','침묵의 항로','파편의 기억','경계의 불꽃','역행하는 별','길 잃은 함대','새벽의 균열','심연의 관측자','마지막 궤도','돌아오는 이름','다시 열린 하늘'][i],level:1+i*4}));
 export const DUNGEONS=[{id:'gold',name:'침묵의 금고',reward:'gold',icon:'coin',description:'골드 집중 획득'},{id:'xp',name:'기억의 회랑',reward:'xp',icon:'book',description:'성장 재료 집중 획득'},{id:'gear',name:'궤도 공방',reward:'gear',icon:'armor',description:'장비 획득'},{id:'ascend',name:'별의 심층',reward:'ascend',icon:'crystal',description:'돌파·각성 재료 획득'}];
+export const ENEMY_ARCHETYPES = {
+ skirmisher:{hp:.8,atk:1.05,def:.8,speed:115,skill:'strike'},
+ brute:{hp:1.45,atk:1.05,def:1.2,speed:65,skill:'strike'},
+ caster:{hp:.85,atk:.8,def:.8,speed:95,skill:'sweep'},
+ warden:{hp:1.2,atk:.75,def:1.4,speed:80,skill:'ward'}
+};

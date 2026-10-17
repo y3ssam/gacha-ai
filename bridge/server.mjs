@@ -36,7 +36,7 @@ export function makeServer(){return http.createServer(async(req,res)=>{
  if(!authorized(req))return json(res,401,{error:'연결 코드가 올바르지 않습니다. 로컬 프로그램의 코드를 입력하세요.'});
  if(path==='/api/health'&&req.method==='GET')return json(res,200,{vertex:!!config.serviceAccount,nai:!!config.naiToken});
  if(req.method!=='POST')return json(res,405,{error:'POST required'});
- const data=await body(req);
+ const data=await body(req);if(typeof data.prompt==='string'&&data.prompt.length>500000)throw Error('생성 맥락이 너무 큽니다. 지침을 줄여주세요.');
  if(path==='/api/config'){
  if(busy)throw Error('생성 중에는 연결을 변경할 수 없습니다.');
  if(data.disconnect){config={};cachedToken=null;return json(res,200,{vertex:false,nai:false});}
@@ -50,7 +50,7 @@ export function makeServer(){return http.createServer(async(req,res)=>{
  if(path==='/api/text'){
  const token=await accessToken(),location=config.location||'global',host=location==='global'?'aiplatform.googleapis.com':`${location}-aiplatform.googleapis.com`;
  const sa=config.serviceAccount;const endpoint=`https://${host}/v1/projects/${encodeURIComponent(sa.project_id)}/locations/${location}/publishers/google/models/${config.model}:generateContent`;
- const r=await external(endpoint,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:String(data.system||'').slice(0,20000)}]},contents:[{role:'user',parts:[{text:String(data.prompt||'').slice(0,500000)}]}],generationConfig:{responseMimeType:'application/json',temperature:.85,maxOutputTokens:10000}})});
+ const r=await external(endpoint,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:String(data.system||'').slice(0,20000)}]},contents:[{role:'user',parts:[{text:String(data.prompt||'')}]}],generationConfig:{responseMimeType:'application/json',temperature:.85,maxOutputTokens:10000}})});
  const out=await r.json();const candidate=out.candidates?.[0];if(candidate?.finishReason!=='STOP')throw Error('AI 응답이 차단되거나 길이 제한으로 중단되었습니다. 지침을 조정해 재시도하세요.');const text=candidate.content?.parts?.filter(x=>!x.thought).map(x=>x.text||'').join('');let parsed;try{parsed=JSON.parse(text);}catch{throw Error('AI가 유효한 JSON을 반환하지 않았습니다. 재시도하세요.');}return json(res,200,parsed);
  }
  if(!config.naiToken)throw Error('NAI API 토큰을 연결하세요.');if(typeof data.prompt!=='string'||data.prompt.length>8000)throw Error('이미지 프롬프트 길이 오류');
